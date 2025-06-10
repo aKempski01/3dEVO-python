@@ -15,6 +15,7 @@ def weighted_reproduction(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, i
 
 
 def reproduction_2d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices):
+    _gm = game_matrix.copy()
     for idx in indices:
         neighbours = get_cell_neighbours_2d(idx[0], idx[1])
         fit_list = []
@@ -32,8 +33,8 @@ def reproduction_2d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices
             new_val += game_matrix[neighbours[i]]*fit_list[i]
 
         new_val /= np.sum(new_val)
-        game_matrix[idx] = new_val
-    return game_matrix
+        _gm[idx] = new_val
+    return _gm
 
 def reproduction_3d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices):
     pass

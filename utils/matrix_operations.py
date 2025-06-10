@@ -16,7 +16,7 @@ def get_game_matrix():
 
 
 def get_game_matrix_2d():
-    game_matrix = np.random.random([config.pop_length] * config.num_of_dims + [2])
+    game_matrix = np.random.random([config.pop_length] * config.num_of_dims + [config.num_of_phenotypes])
     gm = np.sum(game_matrix, axis = -1)
 
     game_matrix[:,:,0] /= gm
@@ -30,7 +30,7 @@ def get_game_matrix_2d():
 
 
 def get_game_matrix_3d():
-    game_matrix = np.random.random([config.pop_length] * config.num_of_dims + [2])
+    game_matrix = np.random.random([config.pop_length] * config.num_of_dims + [config.num_of_phenotypes])
     gm = np.sum(game_matrix, axis = -1)
 
     game_matrix[:,:,:,0] /= gm

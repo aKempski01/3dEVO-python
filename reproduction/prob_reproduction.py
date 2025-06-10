@@ -15,6 +15,8 @@ def prob_reproduction(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indic
 
 
 def reproduction_2d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices):
+    _gm = game_matrix.copy()
+
     for idx in indices:
         neighbours = get_cell_neighbours_2d(idx[0], idx[1])
         fit_list = []
@@ -36,11 +38,12 @@ def reproduction_2d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices
 
 
         best_n = neighbours[best_arg]
-        game_matrix[idx[0], idx[1]] = game_matrix[best_n[0], best_n[1]]
+        _gm[idx[0], idx[1]] = game_matrix[best_n[0], best_n[1]]
 
-    return game_matrix
+    return _gm
 
 def reproduction_3d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices):
+    _gm = game_matrix.copy()
     for idx in indices:
         neighbours = get_cell_neighbours_3d(idx[0], idx[1], idx[2])
         fit_list = []
@@ -61,6 +64,6 @@ def reproduction_3d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices
                 break
 
         best_n = neighbours[best_arg]
-        game_matrix[idx[0], idx[1], idx[2]] = game_matrix[best_n[0], best_n[1], best_n[2]]
+        _gm[idx[0], idx[1], idx[2]] = game_matrix[best_n[0], best_n[1], best_n[2]]
 
-    return game_matrix
+    return _gm
