@@ -32,7 +32,7 @@ def main():
     history['fitness'].append(np.sum(pay_off_matrix))
 
     mw = Mainwindow()
-    mw.display_output_matrix(history['gm'])
+    mw.display_output_matrix(history['gm'], history['fitness'])
 
 if __name__ == '__main__':
     main()

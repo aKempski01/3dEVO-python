@@ -1,7 +1,7 @@
 from utils.enums import DeathStrategy, ReproductionStrategy, SpatialityStrategy, NeighborhoodType, ProblemType
 
 num_of_dims = 2
-num_of_phenotypes = 2
+num_of_phenotypes = 3
 max_iterations = 50
 pop_length = 100
 
@@ -13,7 +13,7 @@ mortality_rate = 0.1
 reproduction_strategy = ReproductionStrategy.DETERMINISTIC
 num_of_cells_for_mean = 6
 
-spatiality_strategy = SpatialityStrategy.MIXED
+spatiality_strategy = SpatialityStrategy.SPATIAL
 
 neighborhood_type = NeighborhoodType.VONNEUMAN
 
@@ -24,8 +24,8 @@ parallel = True
 num_cpu = 8
 
 
-problem_type = ProblemType.HAWKDOVE
-# problem_type = ProblemType.APOPTOSIS
+# problem_type = ProblemType.HAWKDOVE
+problem_type = ProblemType.APOPTOSIS
 
 ### Hawk - Dove problem
 V_param = 6
