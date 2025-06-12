@@ -29,6 +29,7 @@ def reproduction_2d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices
 
 
 def reproduction_3d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices):
+    _gm = game_matrix.copy()
     for idx in indices:
         neighbours = get_cell_neighbours_3d(idx[0], idx[1], idx[2])
         fit_list = []
@@ -37,8 +38,8 @@ def reproduction_3d(game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices
 
         best_n = neighbours[np.argmax(fit_list)]
 
-        game_matrix[idx[0], idx[1], idx[2]] = game_matrix[best_n[0], best_n[1], best_n[2]]
+        _gm[idx[0], idx[1], idx[2]] = game_matrix[best_n[0], best_n[1], best_n[2]]
 
-    return game_matrix
+    return _gm
 
 
