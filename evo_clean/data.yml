@@ -1,0 +1,35 @@
+experiment_name: take_01
+
+num_epochs: 20
+population_length: 10
+num_dim: 2
+
+#True False
+run_in_parallel: True
+num_cpu: 1
+
+# Synch; Asynch; Semi_Synch
+mortality_strategy: Synch
+
+mortality_rate: 0.5
+
+#Deterministic; Probabilistic; Weighted
+reproduction_strategy_name: Deterministic
+
+num_cells_for_mean: 4
+
+
+#SPATIAL; MIXED
+spatiality_strategy: SPATIAL
+
+#Moore, VonNeuman
+neighbourhood_type: Moore
+
+
+
+
+problem_name: DuckDoveProblem
+
+problem_params:
+  C_param: 9
+  V_param: 6
