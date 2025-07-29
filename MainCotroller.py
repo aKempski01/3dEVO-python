@@ -6,7 +6,7 @@ from mortality.Synch import Synch
 from mortality.SemiSynch import SemiSynch
 
 from problem.ProblemController import ProblemController
-from problem.DuckDoveProblem import DuckDoveProblem
+from problem.HawkDoveProblem import HawkDoveProblem
 from problem.ApoptosisProblem import ApoptosisProblem
 
 from neighbourhood.NeighbourController import NeighbourController
@@ -25,6 +25,7 @@ from utils.SaveController import SaveController
 
 # todo:
 # rozbudować initial matrix settings
+# poprawić obliczenia w 3D
 
 
 class MainCotroller:
@@ -51,7 +52,7 @@ class MainCotroller:
 
 
     def run(self):
-        self.save_controller.save_yaml_file()
+        self.save_controller.save_yaml_file(self.problem_controller)
         game_matrix = get_game_matrix(self.param_handler)
 
         self.save_controller.save_game_matrix(game_matrix, 0)

@@ -48,6 +48,10 @@ class ParamHandler:
         elif data['spatiality_strategy'] == "SPATIAL":
             self.spatiality_strategy = SpatialityStrategy.SPATIAL
 
+        else:
+            exit("Spatiality strategy not supported")
+
+
         self.mortality_strategy = data['mortality_strategy']
         self.mortality_rate = data['mortality_rate']
 
@@ -57,5 +61,38 @@ class ParamHandler:
         self.reproduction_strategy_name = data['reproduction_strategy_name']
         self.num_cells_for_mean = data['num_cells_for_mean']
 
+        if 'initial_probability' in  data.keys():
+            self.initial_probability = data['initial_probability']
+            self.num_phenotypes = len(self.initial_probability.keys())
+
+        if 'num_phenotypes' in data.keys():
+            self.num_phenotypes = data['num_phenotypes']
+
+        if "phenotype_names" in  data.keys():
+            self.phenotype_names = data['phenotype_names']
+
+        elif "phenotype_name" not in data.keys() and 'num_phenotypes' in data.keys():
+            self.phenotype_names = {}
+            for n in range(data['num_phenotypes']):
+                self.phenotype_names[n] = str(n)
+
+
+
     def set_num_phenotypes(self, num_phenotypes: int):
-        self.num_phenotypes = num_phenotypes
+        if hasattr(self, 'num_phenotypes') and self.num_phenotypes is not None:
+            if len(self.phenotype_names) != num_phenotypes:
+                exit("Number of phenotype names does not match number of phenotypes")
+
+            if self.num_phenotypes != num_phenotypes:
+                exit("Number of initial phenotype proabilities does not match number of phenotypes")
+        else:
+            self.num_phenotypes = num_phenotypes
+
+        if not hasattr(self, 'initial_probability') or len(self.initial_probability.keys()) != self.num_phenotypes:
+            self.initial_probability = {}
+
+            for i in range(self.num_phenotypes):
+                self.initial_probability[str(i)] = 1/self.num_phenotypes
+
+
+

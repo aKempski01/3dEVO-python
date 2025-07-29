@@ -1,6 +1,6 @@
 experiment_name: take_01
 
-num_epochs: 20
+num_epochs: 50
 population_length: 10
 num_dim: 2
 
@@ -8,8 +8,8 @@ num_dim: 2
 run_in_parallel: True
 num_cpu: 1
 
-# Synch; Asynch; Semi_Synch
-mortality_strategy: Synch
+# Synch; Asynch; SemiSynch
+mortality_strategy: SemiSynch
 
 mortality_rate: 0.5
 
@@ -28,8 +28,17 @@ neighbourhood_type: Moore
 
 
 
-problem_name: DuckDoveProblem
+problem_name: HawkDoveProblem
 
 problem_params:
-  C_param: 9
-  V_param: 6
+  C_param: 6
+  V_param: 9
+
+
+# Put path to initial matrix. If you want to generate matrix on random put None.
+initial_matrix: None
+
+initial_probability:
+  0: 0.5
+  1: 0.5
+

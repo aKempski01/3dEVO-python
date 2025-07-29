@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from multiprocessing import Pool
-from typing import List
+from typing import List, Dict
 
 import numpy as np
 
@@ -14,6 +14,7 @@ class ProblemController(ABC):
 
     param_handler: ParamHandler
     neighbour_controller: NeighbourController
+    phenotype_names: Dict[int, str]
 
 
     def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):

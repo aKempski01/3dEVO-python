@@ -1,19 +1,23 @@
+from typing import List, Dict
+
 from neighbourhood.NeighbourController import NeighbourController
 from problem.ProblemController import ProblemController
 from utils.ParamHandler import ParamHandler
 
 
-class DuckDoveProblem(ProblemController):
+class HawkDoveProblem(ProblemController):
     V_param: int
     C_param: int
-
+    phenotype_names: Dict[int, str]
 
     def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):
         super().__init__(param_handler, neighbour_controller)
 
-        self.num_phenotypes = 2
         self.supported_num_dims = [2, 3]
 
+        self.num_phenotypes = 2
+        self.phenotype_names = {0: 'Hawk',
+                                1: "Dove"}
 
 
     def fitness_problem(self, player: int, enemy: int):
