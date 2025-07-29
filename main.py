@@ -1,39 +1,36 @@
-import numpy as np
-import config
-from matplotlib import pyplot as plt
-from fitness.fitness import fitness_fun
-from utils.matrix_operations import get_game_matrix
-from mortality.mortality import mortality
-from reproduction.reproduction import reproduction
-import tqdm
+import os
+import argparse
 import time
 
-from GUI.main_window import Mainwindow
+from MainCotroller import MainCotroller
+
+
+def file_path(string):
+    if os.path.isfile(string):
+        return string
+    else:
+        raise FileNotFoundError(string)
+
+
+parser = argparse.ArgumentParser(description = 'Application allowing to solve 2d/3d decision game problems.')
+parser.add_argument('--yaml-path', type=file_path, help='path to the YAML configuration file. If left empty the default configuration will be used.')
+
+args = parser.parse_args()
+
 
 def main():
-    if not config.validate_config():
-        return
+    if args.yaml_path is not None:
+        yaml_path = args.yaml_path
+    else:
+        yaml_path = "data.yml"
 
-    game_matrix = get_game_matrix()
-    history = {"gm": [game_matrix], "fitness": []}
-
-
-    for e in tqdm.tqdm(range(config.max_iterations)):
-        pay_off_matrix = fitness_fun(game_matrix)
-
-        history['fitness'].append(np.sum(pay_off_matrix))
-
-        indices = mortality(game_matrix)
-        game_matrix = reproduction(game_matrix, pay_off_matrix, indices)
-
-        history['gm'].append(game_matrix)
+    mc = MainCotroller(yaml_path)
+    t = time.time()
+    mc.run()
+    print("The full evolution process took {} seconds".format(time.time() - t))
 
 
-    history['fitness'].append(np.sum(pay_off_matrix))
 
-    mw = Mainwindow()
-    mw.display_output_matrix(history['gm'], history['fitness'])
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
