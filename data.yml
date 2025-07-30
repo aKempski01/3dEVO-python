@@ -1,8 +1,8 @@
 experiment_name: take_01
 
-num_epochs: 50
+num_epochs: 5
 population_length: 10
-num_dim: 2
+num_dim: 3
 
 #True False
 run_in_parallel: True

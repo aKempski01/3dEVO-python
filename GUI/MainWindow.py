@@ -63,7 +63,7 @@ class MainWindow(QtWidgets.QWidget):
 
     def switch_page(self, idx: int):
         if idx == 0:
-            self.exp_info.init_layout()
+            self.exp_info.refresh_layout()
 
         if idx == 1:
             self.plot_displayer.refresh_layout()
@@ -78,7 +78,7 @@ class MainWindow(QtWidgets.QWidget):
         self.logic_handler.load_experiment(name)
 
         if self.stackedLayout.currentIndex() == 0:
-            self.exp_info.init_layout()
+            self.exp_info.refresh_layout()
 
         if self.stackedLayout.currentIndex() == 1:
             self.plot_displayer.refresh_layout()

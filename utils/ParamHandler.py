@@ -61,7 +61,7 @@ class ParamHandler:
         self.reproduction_strategy_name = data['reproduction_strategy_name']
         self.num_cells_for_mean = data['num_cells_for_mean']
 
-        if 'initial_probability' in  data.keys():
+        if 'initial_probability' in data.keys():
             self.initial_probability = data['initial_probability']
             self.num_phenotypes = len(self.initial_probability.keys())
 
@@ -80,7 +80,7 @@ class ParamHandler:
 
     def set_num_phenotypes(self, num_phenotypes: int):
         if hasattr(self, 'num_phenotypes') and self.num_phenotypes is not None:
-            if len(self.phenotype_names) != num_phenotypes:
+            if hasattr(self, 'phenotype_names') and len(self.phenotype_names) != num_phenotypes:
                 exit("Number of phenotype names does not match number of phenotypes")
 
             if self.num_phenotypes != num_phenotypes:
