@@ -11,9 +11,11 @@ class ApoptosisProblem(ProblemController):
     def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):
         super().__init__(param_handler, neighbour_controller)
 
-        self.num_phenotypes = 2
+        self.num_phenotypes = 3
         self.supported_num_dims = [2, 3]
-
+        self.phenotype_names = {0: 'K',
+                                1: "M",
+                                2: "N"}
 
     # 0: K, 1: M. 2: N
 

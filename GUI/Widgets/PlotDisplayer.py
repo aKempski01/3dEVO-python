@@ -26,13 +26,13 @@ class MplCanvas(FigureCanvasQTAgg):
         self.axes = []
         if n_dim == 2:
             for n in range(n_phenotypes):
-                self.axes.append(self.fig.add_subplot(int(0.5 + 2/n_phenotypes), 2, n+1))
+                self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n+1))
                 self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1)), ax=self.axes[n],
                                      orientation='vertical')
 
         elif n_dim == 3:
             for n in range(n_phenotypes):
-                self.axes.append(self.fig.add_subplot(int(0.5 + 2 / n_phenotypes), 2, n + 1, projection='3d'))
+                self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n + 1, projection='3d'))
                 self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1)), ax=self.axes[n],
                                   orientation='vertical')
 
@@ -97,7 +97,7 @@ class PlotDisplayer(QtWidgets.QWidget):
 
                 idx = np.argwhere(self.game_matrix[:, :, :, n] > 0)
                 c = self.game_matrix[idx[:,0], idx[:,1], idx[:,2], n]
-                self.sc.axes[n].scatter(idx[:,0], idx[:,1], idx[:,2], c=c, vmin=0, vmax=1)
+                self.sc.axes[n].scatter(idx[:,0], idx[:,1], idx[:,2], c=c, vmin=0, vmax=1, cmap='Blues')
 
             self.sc.axes[n].title.set_text(self.__logic_handler.param_handler.phenotype_names[n])
 

@@ -21,7 +21,7 @@ def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
 
     if ph.spatiality_strategy == SpatialityStrategy.MIXED:
         gm = np.sum(game_matrix, axis=-1)
-        for i in range(2):
+        for i in range(ph.num_phenotypes):
             game_matrix[:, :, i] /= gm
         return game_matrix
 
@@ -45,7 +45,7 @@ def get_game_matrix_3d(ph: ParamHandler):
 
     if ph.spatiality_strategy == SpatialityStrategy.MIXED:
         gm = np.sum(game_matrix, axis=-1)
-        for i in range(ph.num_dim):
+        for i in range(ph.num_phenotypes):
             game_matrix[:, :, :, i] /= gm
         return game_matrix
 
