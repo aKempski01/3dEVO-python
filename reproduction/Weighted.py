@@ -53,6 +53,7 @@ class Weighted(ReproductionController):
         for idx in indices:
             neighbours = self.neighbour_controller.get_cell_neighbours_3d(idx[0], idx[1], idx[2])
             fit_list = []
+            neighbours = list(neighbours)
             for n in neighbours:
                 fit_list.append(pay_off_matrix[n[0], n[1], n[2]])
 
@@ -62,9 +63,10 @@ class Weighted(ReproductionController):
                     fit_list.pop(to_remove)
                     neighbours.pop(to_remove)
 
+            neighbours = np.array(neighbours)
             new_val = np.zeros(self.param_handler.num_phenotypes)
             for i in range(len(neighbours)):
-                new_val += game_matrix[neighbours[i]] * fit_list[i]
+                new_val += game_matrix[neighbours[i, 0], neighbours[i, 1], neighbours[i, 2], :] * fit_list[i]
 
             new_val /= np.sum(new_val)
             _gm[idx[0], idx[1], idx[2], :] = new_val

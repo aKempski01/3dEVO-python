@@ -6,7 +6,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from poetry.console.commands import self
 import matplotlib as mpl
-
+from matplotlib import pyplot as plt
 from GUI.Logic.LogicHandler import LogicHandler
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -114,10 +114,9 @@ class PlotDisplayer(QtWidgets.QWidget):
             if self.__logic_handler.param_handler.num_dim == 2:
                 self.sc.axes[n].imshow(self.game_matrix[:, :, n], vmin=0, vmax=1, cmap=self.sc.chosen_cmap)
             elif self.__logic_handler.param_handler.num_dim == 3:
-                idx = np.argwhere(self.game_matrix[:, :, :, n] > 0)
+                idx = np.argwhere(self.game_matrix[:, :, :, n] > -1)
                 c = self.game_matrix[idx[:,0], idx[:,1], idx[:,2], n]
                 self.sc.axes[n].scatter(idx[:,0], idx[:,1], idx[:,2], c=c, vmin=0, vmax=1, cmap=self.sc.chosen_cmap, alpha=0.5)
-                # self.sc.axes[n].voxels(x, y, z, filled)
 
             self.sc.axes[n].title.set_text(self.__logic_handler.param_handler.phenotype_names[n])
 
@@ -144,3 +143,10 @@ class PlotDisplayer(QtWidgets.QWidget):
 
     def __save_btn_pressed_signal(self):
         pass
+
+    def explode(self, data):
+        size = np.array(data.shape) * 2
+        data_e = np.zeros(size - 1, dtype=data.dtype)
+        data_e[::2, ::2, ::2] = data
+        return data_e
+
