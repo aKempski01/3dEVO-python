@@ -11,7 +11,7 @@ from GUI.Logic.LogicHandler import LogicHandler
 
 class MplCanvas(FigureCanvasQTAgg):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100, n_phenotypes=2, n_dim: int = 2):
+    def __init__(self, parent=None, width=10, height=8, dpi=100, n_phenotypes=2, n_dim: int = 2):
         self.axes = []
         self.fig = Figure(figsize=(width, height), dpi=dpi)
         self.reload_axes(n_phenotypes=n_phenotypes, n_dim=n_dim)
@@ -33,7 +33,7 @@ class MplCanvas(FigureCanvasQTAgg):
         elif n_dim == 3:
             for n in range(n_phenotypes):
                 self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n + 1, projection='3d'))
-                self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1)), ax=self.axes[n],
+                self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap='Blues'), ax=self.axes[n],
                                   orientation='vertical')
 
         else:
@@ -63,7 +63,7 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.botLayout = QHBoxLayout()
         self.botLayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignBottom)
 
-        self.sc = MplCanvas(self, width = 5, height = 4, dpi = 100, n_phenotypes = self.__logic_handler.param_handler.num_phenotypes)
+        self.sc = MplCanvas(self, width = 15, height = 15, dpi = 100, n_phenotypes = self.__logic_handler.param_handler.num_phenotypes)
 
         self.pageLayout.addWidget(self.sc)
         self.pageLayout.addLayout(self.botLayout)
@@ -86,18 +86,16 @@ class PlotDisplayer(QtWidgets.QWidget):
             self.__update_matrix()
             self.__update_plot()
 
-
-
     def __update_plot(self):
         for n in range(self.__logic_handler.param_handler.num_phenotypes):
             self.sc.axes[n].cla()
             if self.__logic_handler.param_handler.num_dim == 2:
                 self.sc.axes[n].imshow(self.game_matrix[:, :, n], vmin=0, vmax=1)
             elif self.__logic_handler.param_handler.num_dim == 3:
-
                 idx = np.argwhere(self.game_matrix[:, :, :, n] > 0)
                 c = self.game_matrix[idx[:,0], idx[:,1], idx[:,2], n]
-                self.sc.axes[n].scatter(idx[:,0], idx[:,1], idx[:,2], c=c, vmin=0, vmax=1, cmap='Blues')
+                self.sc.axes[n].scatter(idx[:,0], idx[:,1], idx[:,2], c=c, vmin=0, vmax=1, cmap='Blues', alpha=0.5)
+                # self.sc.axes[n].voxels(x, y, z, filled)
 
             self.sc.axes[n].title.set_text(self.__logic_handler.param_handler.phenotype_names[n])
 
