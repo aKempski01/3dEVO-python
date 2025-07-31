@@ -24,8 +24,9 @@ from utils.SaveController import SaveController
 
 
 # todo:
-# rozbudować initial matrix settings
-# poprawić obliczenia w 3D
+# dodać zapisywanie plotów
+# poprawić wizualizacje w 3D
+
 
 
 class MainCotroller:

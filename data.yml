@@ -1,6 +1,6 @@
 experiment_name: take_01
 
-num_epochs: 50
+num_epochs: 500
 population_length: 10
 num_dim: 2
 
@@ -9,12 +9,12 @@ run_in_parallel: True
 num_cpu: 1
 
 # Synch; Asynch; SemiSynch
-mortality_strategy: SemiSynch
+mortality_strategy: Asynch
 
-mortality_rate: 0.5
+mortality_rate: 0.25
 
 #Deterministic; Probabilistic; Weighted
-reproduction_strategy_name: Deterministic
+reproduction_strategy_name: Weighted
 
 num_cells_for_mean: 4
 
@@ -22,23 +22,23 @@ num_cells_for_mean: 4
 #SPATIAL; MIXED
 spatiality_strategy: MIXED
 
-#Moore, VonNeuman
-neighbourhood_type: Moore
+#Moore, VonNeumann
+neighbourhood_type: VonNeumann
 
 
 
-problem_name: HawkDoveProblem
+problem_name: ApoptosisProblem
 #problem_name: ApoptosisProblem
 
 
-problem_params:
-  C_param: 6
-  V_param: 9
-
 #problem_params:
-#  a_param: 1
-#  b_param: 2
-#  c_param: 3
+#  C_param: 6
+#  V_param: 9
+#
+problem_params:
+  a_param: 1
+  b_param: 2
+  c_param: 3
 
 # Put path to initial matrix. If you want to generate matrix on random put None.
 initial_matrix: None
@@ -46,5 +46,5 @@ initial_matrix: None
 initial_probability:
   0: 0.5
   1: 0.5
-#  2: 0.5
+  2: 0.5
 

@@ -16,7 +16,8 @@ class Deterministic(ReproductionController):
         elif self.param_handler.num_dim == 3:
             return self.__reproduction_3d(game_matrix, pay_off_matrix, indices)
         else:
-            raise ValueError("Wrong number of dimension")
+            raise ValueError("Incorrect number of dimensions")
+
 
 
 

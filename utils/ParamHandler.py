@@ -49,7 +49,7 @@ class ParamHandler:
             self.spatiality_strategy = SpatialityStrategy.SPATIAL
 
         else:
-            exit("Spatiality strategy not supported")
+            raise ValueError("Spatiality strategy not supported")
 
 
         self.mortality_strategy = data['mortality_strategy']
@@ -81,10 +81,10 @@ class ParamHandler:
     def set_num_phenotypes(self, num_phenotypes: int):
         if hasattr(self, 'num_phenotypes') and self.num_phenotypes is not None:
             if hasattr(self, 'phenotype_names') and len(self.phenotype_names) != num_phenotypes:
-                exit("Number of phenotype names does not match number of phenotypes")
+                raise ValueError("Number of phenotype names does not match number of phenotypes")
 
             if self.num_phenotypes != num_phenotypes:
-                exit("Number of initial phenotype proabilities does not match number of phenotypes")
+                raise ValueError("Number of initial phenotype probabilities does not match number of phenotypes")
         else:
             self.num_phenotypes = num_phenotypes
 

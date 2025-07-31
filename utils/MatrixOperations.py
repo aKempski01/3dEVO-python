@@ -19,9 +19,14 @@ def get_game_matrix(param_handler: ParamHandler) -> np.ndarray:
 def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
     game_matrix = np.random.random([ph.population_length] * 2 + [ph.num_phenotypes])
 
+    for i in range(ph.num_phenotypes):
+        game_matrix[:, :, i] *= list(ph.initial_probability.values())[i]
+
     if ph.spatiality_strategy == SpatialityStrategy.MIXED:
+
         gm = np.sum(game_matrix, axis=-1)
         for i in range(ph.num_phenotypes):
+
             game_matrix[:, :, i] /= gm
         return game_matrix
 
@@ -40,7 +45,9 @@ def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
 
 def get_game_matrix_3d(ph: ParamHandler):
     game_matrix = np.random.random([ph.population_length] * ph.num_dim + [ph.num_phenotypes])
-    # gm = np.sum(game_matrix, axis = -1)
+
+    for i in range(ph.num_phenotypes):
+        game_matrix[:, :, :, i] *= list(ph.initial_probability.values())[i]
 
 
     if ph.spatiality_strategy == SpatialityStrategy.MIXED:

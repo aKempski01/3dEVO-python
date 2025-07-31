@@ -2,6 +2,7 @@ import numpy as np
 
 from neighbourhood.NeighbourController import NeighbourController
 from reproduction.ReproductionController import ReproductionController
+from utils.Enums import SpatialityStrategy
 from utils.ParamHandler import ParamHandler
 
 
@@ -9,6 +10,8 @@ class Weighted(ReproductionController):
 
     def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):
         super().__init__(param_handler, neighbour_controller)
+        if param_handler.spatiality_strategy != SpatialityStrategy.MIXED:
+            raise ValueError("Weighted reproduction only supports MIXED spatial strategy.")
 
     def reproduce(self, game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices: np.ndarray) -> np.ndarray:
         if self.param_handler.num_dim == 2:
@@ -16,7 +19,7 @@ class Weighted(ReproductionController):
         elif self.param_handler.num_dim == 3:
             return self.__reproduction_3d(game_matrix, pay_off_matrix, indices)
         else:
-            raise ValueError("Wrong number of dimension")
+            raise ValueError("Incorrect number of dimensions")
 
 
 
@@ -25,6 +28,7 @@ class Weighted(ReproductionController):
         for idx in indices:
             neighbours = self.neighbour_controller.get_cell_neighbours_2d(idx[0], idx[1])
             fit_list = []
+            neighbours = list(neighbours)
             for n in neighbours:
                 fit_list.append(pay_off_matrix[n[0], n[1]])
 
@@ -34,12 +38,13 @@ class Weighted(ReproductionController):
                     fit_list.pop(to_remove)
                     neighbours.pop(to_remove)
 
+            neighbours = np.array(neighbours)
             new_val = np.zeros(self.param_handler.num_phenotypes)
             for i in range(len(neighbours)):
-                new_val += game_matrix[neighbours[i]] * fit_list[i]
+                new_val += game_matrix[neighbours[i][0], neighbours[i][1], :] * fit_list[i]
 
             new_val /= np.sum(new_val)
-            _gm[idx] = new_val
+            _gm[idx[0], idx[1], :] = new_val
         return _gm
 
 
@@ -62,6 +67,6 @@ class Weighted(ReproductionController):
                 new_val += game_matrix[neighbours[i]] * fit_list[i]
 
             new_val /= np.sum(new_val)
-            _gm[idx] = new_val
+            _gm[idx[0], idx[1], idx[2], :] = new_val
         return _gm
 

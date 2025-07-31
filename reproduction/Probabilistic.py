@@ -14,12 +14,13 @@ class Probabilistic(ReproductionController):
 
     def reproduce(self, game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices: np.ndarray):
         if self.param_handler.num_dim == 2:
-            self.__reproduction_2d(game_matrix, pay_off_matrix, indices)
+            return self.__reproduction_2d(game_matrix, pay_off_matrix, indices)
 
         elif self.param_handler.num_dim == 3:
-            self.__reproduction_3d(game_matrix, pay_off_matrix, indices)
+            return self.__reproduction_3d(game_matrix, pay_off_matrix, indices)
         else:
-            raise ValueError("Wrong number of dimension")
+            raise ValueError("Incorrect number of dimensions")
+
 
     def __reproduction_2d(self, game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices: np.ndarray):
         _gm = game_matrix.copy()
