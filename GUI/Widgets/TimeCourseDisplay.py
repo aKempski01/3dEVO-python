@@ -1,6 +1,6 @@
 import numpy as np
 from PySide6 import QtWidgets, QtCore
-from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox
+from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox, QCheckBox, QPushButton
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from poetry.console.commands import self
@@ -8,6 +8,7 @@ import matplotlib as mpl
 
 from GUI.Logic.LogicHandler import LogicHandler
 
+from GUI.utils.save_functions import save_plt
 
 class MplCanvas(FigureCanvasQTAgg):
 
@@ -20,11 +21,12 @@ class MplCanvas(FigureCanvasQTAgg):
 
 
 
-
 class TimeCourseDisplay(QtWidgets.QWidget):
     __logic_handler: LogicHandler
     displayed_epoch: int = 0
     history: np.ndarray
+
+    normalize_plot: bool = False
 
     def __init__(self, logic_handler: LogicHandler):
         super().__init__()
@@ -32,10 +34,29 @@ class TimeCourseDisplay(QtWidgets.QWidget):
         self.__logic_handler = logic_handler
 
         self.pageLayout = QVBoxLayout()
+        self.top_lay = QHBoxLayout()
+
+        self.set_norm_btn = QPushButton("Normalize plot")
+        self.set_norm_btn.pressed.connect(self.normalize_plot_check_signal)
+
+        self.save_btn = QPushButton("Save plot")
+        self.save_btn.pressed.connect(self.save_plot_signal)
+
+        self.top_lay.addWidget(self.set_norm_btn)
+        self.top_lay.addWidget(self.save_btn)
+        self.top_lay.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+
+
+        self.mainLayout = QVBoxLayout()
 
         self.sc = MplCanvas(self, width = 5, height = 4, dpi = 100, n_phenotypes = self.__logic_handler.param_handler.num_phenotypes)
 
-        self.pageLayout.addWidget(self.sc)
+
+        self.pageLayout.addLayout(self.top_lay)
+
+        self.mainLayout.addWidget(self.sc)
+        self.pageLayout.addLayout(self.mainLayout, stretch=1)
+
         self.setLayout(self.pageLayout)
 
         self.refresh_layout()
@@ -55,8 +76,21 @@ class TimeCourseDisplay(QtWidgets.QWidget):
         self.sc.ax.legend()
         self.sc.ax.title.set_text("time plot")
 
+        if self.normalize_plot:
+            self.sc.ax.set_ylim(0, 1)
+
+
         self.sc.draw()
 
 
     def update_history(self):
         self.history = self.__logic_handler.get_history()
+
+
+    def normalize_plot_check_signal(self):
+        self.normalize_plot = not self.normalize_plot
+        self.update_plot()
+
+
+    def save_plot_signal(self):
+        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "history")

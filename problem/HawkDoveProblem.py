@@ -21,7 +21,7 @@ class HawkDoveProblem(ProblemController):
 
 
     def fitness_problem(self, player: int, enemy: int):
-        if player == 1 and enemy == 1:
+        if player == 0 and enemy == 0:
             return (self.V_param - self.C_param) / 2
 
         elif player == 1 and enemy == 0:
@@ -30,5 +30,5 @@ class HawkDoveProblem(ProblemController):
         elif player == 0 and enemy == 1:
             return 0
 
-        elif player == 0 and enemy == 0:
+        elif player == 1 and enemy == 1:
             return self.V_param / 2

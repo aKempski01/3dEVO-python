@@ -1,3 +1,5 @@
+from typing import Optional
+
 import yaml
 
 from utils.Enums import SpatialityStrategy
@@ -6,6 +8,8 @@ class ParamHandler:
     experiment_name: str
     problem_name: str
     problem_params: dict
+
+    initial_matrix_path: Optional[str] = None
 
     num_epochs: int
     num_dim: int
@@ -68,13 +72,17 @@ class ParamHandler:
         if 'num_phenotypes' in data.keys():
             self.num_phenotypes = data['num_phenotypes']
 
-        if "phenotype_names" in  data.keys():
+        if "phenotype_names" in data.keys():
             self.phenotype_names = data['phenotype_names']
 
         elif "phenotype_name" not in data.keys() and 'num_phenotypes' in data.keys():
             self.phenotype_names = {}
             for n in range(data['num_phenotypes']):
                 self.phenotype_names[n] = str(n)
+
+
+        if data['initial_matrix'] != 'None':
+            self.initial_matrix_path = data['initial_matrix']
 
 
 

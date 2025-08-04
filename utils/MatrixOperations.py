@@ -5,6 +5,9 @@ from utils.ParamHandler import ParamHandler
 
 
 def get_game_matrix(param_handler: ParamHandler) -> np.ndarray:
+    if param_handler.initial_matrix_path != None:
+        return get_game_matrix_from_file(param_handler)
+
     if param_handler.num_dim == 2:
         return get_game_matrix_2d(param_handler)
 
@@ -64,3 +67,8 @@ def get_game_matrix_3d(ph: ParamHandler):
             game_matrix[:, :, :, p] = np.where(idx == p, 1, 0)
 
         return game_matrix
+
+
+def get_game_matrix_from_file(ph: ParamHandler) -> np.ndarray:
+    gm = np.load(ph.initial_matrix_path)
+    return gm

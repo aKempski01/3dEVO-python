@@ -8,6 +8,7 @@ from poetry.console.commands import self
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from GUI.Logic.LogicHandler import LogicHandler
+from GUI.utils.save_functions import save_plt
 
 class MplCanvas(FigureCanvasQTAgg):
 
@@ -142,7 +143,8 @@ class PlotDisplayer(QtWidgets.QWidget):
 
 
     def __save_btn_pressed_signal(self):
-        pass
+        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.displayed_epoch))
+
 
     def explode(self, data):
         size = np.array(data.shape) * 2
