@@ -81,7 +81,7 @@ class ParamHandler:
                 self.phenotype_names[n] = str(n)
 
 
-        if data['initial_matrix'] != 'None':
+        if 'initial_matrix' in data.keys() and data['initial_matrix'] != 'None':
             self.initial_matrix_path = data['initial_matrix']
 
 
