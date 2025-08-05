@@ -24,7 +24,6 @@ from utils.SaveController import SaveController
 
 
 # todo:
-# dodać zapisywanie plotów
 # poprawić wizualizacje w 3D
 
 

@@ -1,5 +1,5 @@
 import numpy as np
-
+import random
 from utils.Enums import SpatialityStrategy
 from utils.ParamHandler import ParamHandler
 
@@ -19,13 +19,14 @@ def get_game_matrix(param_handler: ParamHandler) -> np.ndarray:
 
 
 
+
 def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
-    game_matrix = np.random.random([ph.population_length] * 2 + [ph.num_phenotypes])
-
-    for i in range(ph.num_phenotypes):
-        game_matrix[:, :, i] *= list(ph.initial_probability.values())[i]
-
     if ph.spatiality_strategy == SpatialityStrategy.MIXED:
+        game_matrix = np.random.random([ph.population_length] * 2 + [ph.num_phenotypes])
+
+        for i in range(ph.num_phenotypes):
+            w = list(ph.initial_probability.values())[i]/np.sum(game_matrix[:, :, i])
+            game_matrix[:, :, i] *= w
 
         gm = np.sum(game_matrix, axis=-1)
         for i in range(ph.num_phenotypes):
@@ -33,13 +34,21 @@ def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
             game_matrix[:, :, i] /= gm
         return game_matrix
 
-    elif ph.spatiality_strategy == SpatialityStrategy.SPATIAL:
-        idx = np.argmax(game_matrix, axis=-1)
-        game_matrix[:, :, :] = 0
 
-        for p in range(ph.num_phenotypes):
-            game_matrix[:, :, p] = np.where(idx == p, 1, 0)
 
+    if ph.spatiality_strategy == SpatialityStrategy.SPATIAL:
+
+        game_matrix = np.zeros([ph.population_length] * ph.num_dim + [ph.num_phenotypes])
+
+        for i in range(ph.num_phenotypes - 1):
+            idx = np.argwhere(np.sum(game_matrix, axis=-1) == 0)
+            idx = idx[random.sample(range(0, idx.shape[0] - 1), int(ph.population_length ** ph.num_dim * list(ph.initial_probability.values())[i])), :]
+
+            game_matrix[idx[:, 0], idx[:, 1], i] = 1
+
+        idx = np.argwhere(np.sum(game_matrix, axis=-1) == 0)
+
+        game_matrix[idx[:, 0], idx[:, 1], -1] = 1
         return game_matrix
 
     else:
@@ -47,26 +56,40 @@ def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
 
 
 def get_game_matrix_3d(ph: ParamHandler):
-    game_matrix = np.random.random([ph.population_length] * ph.num_dim + [ph.num_phenotypes])
-
-    for i in range(ph.num_phenotypes):
-        game_matrix[:, :, :, i] *= list(ph.initial_probability.values())[i]
 
 
     if ph.spatiality_strategy == SpatialityStrategy.MIXED:
+        game_matrix = np.random.random([ph.population_length] * ph.num_dim + [ph.num_phenotypes])
+
+        for i in range(ph.num_phenotypes):
+            w = list(ph.initial_probability.values())[i]/np.sum(game_matrix[:, :, i])
+            game_matrix[:, :, i] *= w
+
         gm = np.sum(game_matrix, axis=-1)
         for i in range(ph.num_phenotypes):
             game_matrix[:, :, :, i] /= gm
         return game_matrix
 
-    elif ph.spatiality_strategy == SpatialityStrategy.SPATIAL:
-        idx = np.argmax(game_matrix, axis=-1)
-        game_matrix[:, :, :, :] = 0
 
-        for p in range(ph.num_phenotypes):
-            game_matrix[:, :, :, p] = np.where(idx == p, 1, 0)
+    if ph.spatiality_strategy == SpatialityStrategy.SPATIAL:
+
+        game_matrix = np.zeros([ph.population_length] * ph.num_dim + [ph.num_phenotypes])
+
+        for i in range(ph.num_phenotypes - 1):
+            idx = np.argwhere(np.sum(game_matrix, axis=-1) == 0)
+
+            idx = idx[random.sample(range(0, idx.shape[0] - 1),
+                                    int(ph.population_length ** ph.num_dim * list(ph.initial_probability.values())[i])), :]
+
+            game_matrix[idx[:, 0], idx[:, 1], idx[:, 2], i] = 1
+
+        idx = np.argwhere(np.sum(game_matrix, axis=-1) == 0)
+
+        game_matrix[idx[:, 0], idx[:, 1], idx[:, 2], -1] = 1
 
         return game_matrix
+
+
 
 
 def get_game_matrix_from_file(ph: ParamHandler) -> np.ndarray:

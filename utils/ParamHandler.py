@@ -1,5 +1,6 @@
 from typing import Optional
 
+import numpy as np
 import yaml
 
 from utils.Enums import SpatialityStrategy
@@ -67,6 +68,10 @@ class ParamHandler:
 
         if 'initial_probability' in data.keys():
             self.initial_probability = data['initial_probability']
+            s = np.sum(list(self.initial_probability.values()))
+            for k in self.initial_probability.keys():
+                self.initial_probability[k] /= s
+                self.initial_probability[k] = float(self.initial_probability[k])
             self.num_phenotypes = len(self.initial_probability.keys())
 
         if 'num_phenotypes' in data.keys():
