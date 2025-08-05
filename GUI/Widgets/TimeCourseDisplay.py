@@ -26,7 +26,7 @@ class TimeCourseDisplay(QtWidgets.QWidget):
     displayed_epoch: int = 0
     history: np.ndarray
 
-    normalize_plot: bool = False
+    normalize_plot: bool = True
 
     def __init__(self, logic_handler: LogicHandler):
         super().__init__()
@@ -77,7 +77,7 @@ class TimeCourseDisplay(QtWidgets.QWidget):
         self.sc.ax.title.set_text("time plot")
 
         if self.normalize_plot:
-            self.sc.ax.set_ylim(0, 1)
+            self.sc.ax.set_ylim(-0.1, 1.1)
 
 
         self.sc.draw()
