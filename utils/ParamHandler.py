@@ -5,6 +5,7 @@ import yaml
 
 from utils.Enums import SpatialityStrategy
 
+
 class ParamHandler:
     experiment_name: str
     problem_name: str
@@ -28,7 +29,11 @@ class ParamHandler:
 
     mortality_rate: float
 
+    chosen_resource_function: str = "None"
+    resource_function_params: dict
+
     def __init__(self, yaml_path: str):
+        self.initial_probability = None
         self.__load_params_from_yaml(yaml_path)
 
     def __load_params_from_yaml(self, yaml_path: str):
@@ -39,7 +44,6 @@ class ParamHandler:
         self.experiment_name = data['experiment_name']
         self.problem_name = data['problem_name']
         self.problem_params = data['problem_params']
-
 
         self.num_epochs = data['num_epochs']
         self.population_length = data['population_length']
@@ -55,7 +59,6 @@ class ParamHandler:
 
         else:
             raise ValueError("Spatiality strategy not supported")
-
 
         self.mortality_strategy = data['mortality_strategy']
         self.mortality_rate = data['mortality_rate']
@@ -85,10 +88,17 @@ class ParamHandler:
             for n in range(data['num_phenotypes']):
                 self.phenotype_names[n] = str(n)
 
-
         if 'initial_matrix' in data.keys() and data['initial_matrix'] != 'None':
             self.initial_matrix_path = data['initial_matrix']
 
+
+        if 'chosen_resource_function' in data.keys():
+            self.chosen_resource_function = data['chosen_resource_function']
+            if 'resource_function_params' in data.keys():
+                self.resource_function_params = data['resource_function_params']
+
+        else:
+            self.chosen_resource_function = "None"
 
 
     def set_num_phenotypes(self, num_phenotypes: int):
@@ -105,7 +115,4 @@ class ParamHandler:
             self.initial_probability = {}
 
             for i in range(self.num_phenotypes):
-                self.initial_probability[str(i)] = 1/self.num_phenotypes
-
-
-
+                self.initial_probability[str(i)] = 1 / self.num_phenotypes

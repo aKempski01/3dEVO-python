@@ -1,4 +1,5 @@
 import time
+from typing import Optional
 
 from mortality.MortalityController import MortalityController
 from mortality.Asynch import Asynch
@@ -7,6 +8,7 @@ from mortality.SemiSynch import SemiSynch
 
 from problem.ProblemController import ProblemController
 from problem.HawkDoveProblem import HawkDoveProblem
+from problem.HawkDoveDynamicProblem import HawkDoveDynamicProblem
 from problem.ApoptosisProblem import ApoptosisProblem
 
 from neighbourhood.NeighbourController import NeighbourController
@@ -17,6 +19,11 @@ from reproduction.ReproductionController import ReproductionController
 from reproduction.Weighted import Weighted
 from reproduction.Deterministic import Deterministic
 from reproduction.Probabilistic import Probabilistic
+
+
+from resource.ResourceFunctionController import ResourceFunctionController
+from resource.StepResourceFunction import StepResourceFunction
+
 
 from utils.MatrixOperations import get_game_matrix
 from utils.ParamHandler import ParamHandler
@@ -35,19 +42,19 @@ class MainCotroller:
     mortality_controller: MortalityController
     reproduction_controller: ReproductionController
     save_controller: SaveController
-
+    resource_function_controller: Optional[ResourceFunctionController]
 
     def __init__(self, yaml_path: str):
         self.param_handler = ParamHandler(yaml_path)
         self.__get_neighbour()
 
+        self.__get_resource_function()
         self.__get_problem_controller()
         self.__get_mortality()
         self.__get_reproduction()
 
+
         self.param_handler.set_num_phenotypes(self.problem_controller.num_phenotypes)
-
-
         self.save_controller = SaveController(self.param_handler)
 
 
@@ -59,6 +66,10 @@ class MainCotroller:
         for epoch in range(self.param_handler.num_epochs):
             print("-----------------------")
             s = time.time()
+
+            self.__update_resource_function(epoch)
+
+
             pay_off_matrix = self.problem_controller.fitness_function(game_matrix)
             indices = self.mortality_controller.get_cells_to_update(game_matrix)
 
@@ -71,10 +82,12 @@ class MainCotroller:
 
 
 
+
+
     def __get_problem_controller(self):
         problems = ProblemController.__subclasses__()
         try:
-            self.problem_controller = [p(self.param_handler, self.neighbour_controller) for p in problems if p.__name__ == self.param_handler.problem_name][0]
+            self.problem_controller = [p(self.param_handler, self.neighbour_controller, self.resource_function_controller) for p in problems if p.__name__ == self.param_handler.problem_name][0]
         except IndexError:
             exit("There is no problem named {}. Make sure, that problem name is the same as class name and class is included at the top of the file".format(self.param_handler.problem_name))
 
@@ -102,3 +115,21 @@ class MainCotroller:
         except IndexError:
             exit("There is no reproduction strategy named {}. Make sure, that reproduction name is the same as class name and class is included at the top of the file".format(self.param_handler.reproduction_strategy_name))
 
+
+    def __get_resource_function(self):
+
+        if self.param_handler.reproduction_strategy_name == "None":
+            self.resource_function_controller = None
+            return
+
+        resource_functions = ResourceFunctionController.__subclasses__()
+        try:
+            self.resource_function_controller = [r(self.param_handler) for r in resource_functions if r.__name__ == self.param_handler.chosen_resource_function][0]
+
+        except IndexError:
+            exit("There is no resource function named {}. Make sure, that resource function name is the same as class name and class is included at the top of the file".format(self.param_handler.chosen_resource_function))
+
+
+    def __update_resource_function(self, epoch: int):
+        if self.resource_function_controller is not None:
+            self.resource_function_controller.update_function_value(epoch)

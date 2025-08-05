@@ -1,6 +1,6 @@
 experiment_name: take_01
 
-num_epochs: 50
+num_epochs: 500
 population_length: 10
 num_dim: 2
 
@@ -20,7 +20,7 @@ num_cells_for_mean: 4
 
 
 #SPATIAL; MIXED
-spatiality_strategy: MIXED
+spatiality_strategy: SPATIAL
 
 #Moore, VonNeumann
 neighbourhood_type: VonNeumann
@@ -28,23 +28,31 @@ neighbourhood_type: VonNeumann
 
 
 #problem_name: HawkDoveProblem
-problem_name: ApoptosisProblem
+problem_name: HawkDoveDynamicProblem
+#problem_name: ApoptosisProblem
 
-
-#problem_params:
-#  V_param: 9
-#  C_param: 6
 
 problem_params:
-  a_param: 1
-  b_param: 2
-  c_param: 3
+  V_param: 9
+  C_param: 6
+
+#problem_params:
+#  a_param: 1
+#  b_param: 2
+#  c_param: 3
 
 # Put path to initial matrix. If you want to generate matrix on random put None.
 initial_matrix: None
 
 initial_probability:
-  0: 0.25
+  0: 0.5
   1: 0.5
-  2: 0.3
+#  2: 0.3
 
+
+# None, StepResourceFunction
+chosen_resource_function: StepResourceFunction
+resource_function_params:
+  step_initial_value: 0
+  step_inc: 0.1
+  step_epoch: 5

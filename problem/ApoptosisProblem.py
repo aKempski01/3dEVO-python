@@ -1,5 +1,8 @@
+from typing import Optional
+
 from neighbourhood.NeighbourController import NeighbourController
 from problem.ProblemController import ProblemController
+from resource.ResourceFunctionController import ResourceFunctionController
 from utils.ParamHandler import ParamHandler
 
 
@@ -8,8 +11,8 @@ class ApoptosisProblem(ProblemController):
     b_param: int
     c_param: int
 
-    def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):
-        super().__init__(param_handler, neighbour_controller)
+    def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController, resource_function_controller: Optional[ResourceFunctionController]):
+        super().__init__(param_handler, neighbour_controller, resource_function_controller)
 
         self.num_phenotypes = 3
         self.supported_num_dims = [2, 3]

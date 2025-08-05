@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from multiprocessing import Pool
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 import numpy as np
 
 from neighbourhood.NeighbourController import NeighbourController
+from resource.ResourceFunctionController import ResourceFunctionController
 from utils.ParamHandler import ParamHandler
 
 
@@ -14,16 +15,18 @@ class ProblemController(ABC):
 
     param_handler: ParamHandler
     neighbour_controller: NeighbourController
+    resource_function: Optional[ResourceFunctionController]
     phenotype_names: Dict[int, str]
 
 
-    def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):
+    def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController, resource_function_controller: Optional[ResourceFunctionController]):
         if param_handler.problem_params is not None:
             for key, value in param_handler.problem_params.items():
                 setattr(self, key, value)
 
         self.param_handler = param_handler
         self.neighbour_controller = neighbour_controller
+        self.resource_function = resource_function_controller
 
 
     @abstractmethod
