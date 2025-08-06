@@ -5,13 +5,13 @@ population_length: 10
 num_dim: 2
 
 #True False
-run_in_parallel: True
+run_in_parallel: False
 num_cpu: 2
 
 # Synch; Asynch; SemiSynch
-mortality_strategy: SemiSynch
+mortality_strategy: Synch
 
-mortality_rate: 0.5
+mortality_rate: 0.1
 
 #Deterministic; Probabilistic; Weighted
 reproduction_strategy_name: Deterministic
@@ -28,26 +28,26 @@ neighbourhood_type: VonNeumann
 
 
 #problem_name: HawkDoveProblem
-problem_name: HawkDoveDynamicProblem
-#problem_name: ApoptosisProblem
+#problem_name: HawkDoveDynamicProblem
+problem_name: ApoptosisProblem
 
-
-problem_params:
-  V_param: 9
-  C_param: 6
 
 #problem_params:
-#  a_param: 1
-#  b_param: 2
-#  c_param: 3
+#  V_param: 9
+#  C_param: 6
+#
+problem_params:
+  a_param: 0.2
+  b_param: 0.3
+  c_param: 0
 
 # Put path to initial matrix. If you want to generate matrix on random put None.
 initial_matrix: None
 
 initial_probability:
-  0: 0.5
-  1: 0.5
-#  2: 0.3
+  0: 0.33
+  1: 0.33
+  2: 0.33
 
 
 # None, StepResourceFunction

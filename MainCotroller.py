@@ -1,6 +1,8 @@
 import time
 from typing import Optional
 
+import numpy as np
+
 from mortality.MortalityController import MortalityController
 from mortality.Asynch import Asynch
 from mortality.Synch import Synch
@@ -32,7 +34,9 @@ from utils.SaveController import SaveController
 
 # todo:
 # poprawić wizualizacje w 3D
-
+# wczytywanie binarek
+# liczyć fitness tylko dla tych co dla zastąpienia
+# równoległe nie działa
 
 
 class MainCotroller:
@@ -43,6 +47,7 @@ class MainCotroller:
     reproduction_controller: ReproductionController
     save_controller: SaveController
     resource_function_controller: Optional[ResourceFunctionController]
+
 
     def __init__(self, yaml_path: str):
         self.param_handler = ParamHandler(yaml_path)
@@ -58,6 +63,7 @@ class MainCotroller:
         self.save_controller = SaveController(self.param_handler)
 
 
+
     def run(self):
         self.save_controller.save_yaml_file(self.problem_controller)
         game_matrix = get_game_matrix(self.param_handler)
@@ -68,7 +74,6 @@ class MainCotroller:
             s = time.time()
 
             self.__update_resource_function(epoch)
-
 
             pay_off_matrix = self.problem_controller.fitness_function(game_matrix)
             indices = self.mortality_controller.get_cells_to_update(game_matrix)

@@ -64,10 +64,10 @@ class ProblemController(ABC):
 
                     for i in range(self.param_handler.num_phenotypes):
                         for j in range(self.param_handler.num_phenotypes):
-                            f = self.fitness_problem(i, j) * game_matrix[x, y, i]
+                            f = self.fitness_problem(i, j) * game_matrix[x, y, i].copy()
 
                             for n in neighbours:
-                                fit_array[x][y] += f * game_matrix[n[0], n[1], j]
+                                fit_array[x][y] += f * game_matrix[n[0], n[1], j].copy()
 
             return fit_array
 
@@ -78,10 +78,12 @@ class ProblemController(ABC):
             neighbours = self.neighbour_controller.get_cell_neighbours_2d(x, idx)
             for i in range(self.param_handler.num_phenotypes):
                 for j in range(self.param_handler.num_phenotypes):
-                    f = self.fitness_problem(i, j) * game_matrix[x, idx, i]
+                    # todo
+                    # sprawdzić czy tu cos się nie psuje
+                    f = self.fitness_problem(i, j) * game_matrix[x, idx, i].copy()
                     if f != 0:
                         for n in neighbours:
-                            fit_array[x] += f * game_matrix[n[0], n[1], j]
+                            fit_array[x] += f * game_matrix[n[0], n[1], j].copy()
 
         return fit_array
 
@@ -106,10 +108,10 @@ class ProblemController(ABC):
 
                         for i in range(self.param_handler.num_phenotypes):
                             for j in range(self.param_handler.num_phenotypes):
-                                f = self.fitness_problem(i, j) * game_matrix[x, y, z, i]
+                                f = self.fitness_problem(i, j) * game_matrix[x, y, z, i].copy()
                                 if f != 0:
                                     for n in neighbours:
-                                        fit_array[x][y][z] += f * game_matrix[n[0], n[1], j]
+                                        fit_array[x][y][z] += f * game_matrix[n[0], n[1], j].copy()
 
             return fit_array
 
@@ -121,10 +123,10 @@ class ProblemController(ABC):
                 neighbours = self.neighbour_controller.get_cell_neighbours_3d(x, y, idx)
                 for i in range(self.param_handler.num_phenotypes):
                     for j in range(self.param_handler.num_phenotypes):
-                        f = self.fitness_problem(i, j) * game_matrix[x, y, idx, i]
+                        f = self.fitness_problem(i, j) * game_matrix[x, y, idx, i].copy()
                         if f != 0:
                             for n in neighbours:
-                                fit_array[x][y] += f * game_matrix[n[0], n[1], n[2], j]
+                                fit_array[x][y] += f * game_matrix[n[0], n[1], n[2], j].copy()
 
         return fit_array
 

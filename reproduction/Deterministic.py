@@ -30,8 +30,8 @@ class Deterministic(ReproductionController):
                 fit_list.append(pay_off_matrix[n[0], n[1]])
 
             best_n = neighbours[np.argmax(fit_list)]
-
             _gm[idx[0], idx[1]] = game_matrix[best_n[0], best_n[1]].copy()
+
 
         return _gm
 

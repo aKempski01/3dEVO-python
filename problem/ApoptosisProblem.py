@@ -26,18 +26,18 @@ class ApoptosisProblem(ProblemController):
         if player == 0 and enemy == 0:
             return 1 - self.a_param + self.b_param
 
-        elif player != 0 and enemy == 0:
+        elif player == 0 and enemy != 0:
             return 1 - self.a_param
 
-        elif player == 0 and enemy == 1:
+        elif player == 1 and enemy == 0:
             return 1 + self.b_param + self.c_param
 
-        elif player != 0 and enemy == 1:
+        elif player == 1 and enemy != 0:
             return 1 + self.c_param
 
-        elif player == 0 and enemy == 2:
+        elif player == 2 and enemy == 0:
             return 1 + self.b_param
 
-        elif player != 0 and enemy == 2:
+        elif player == 2 and enemy != 0:
             return 1
 
