@@ -54,7 +54,7 @@ class ProblemController(ABC):
             with Pool(processes=self.param_handler.num_cpu) as pool:
                 async_results = [pool.apply_async(self.par_2d, args=(game_matrix, i)) for i in range(self.param_handler.population_length)]
                 results = [ar.get() for ar in async_results]
-            return np.array(results)
+            return np.array(results).T
 
         else:
             fit_array = np.zeros([self.param_handler.population_length] * self.param_handler.num_dim)
@@ -73,7 +73,7 @@ class ProblemController(ABC):
 
 
     def par_2d(self, game_matrix, idx: int):
-        fit_array = np.zeros([self.param_handler.population_length] * (self.param_handler.num_dim - 1))
+        fit_array = np.zeros(self.param_handler.population_length)
         for x in range(self.param_handler.population_length):
             neighbours = self.neighbour_controller.get_cell_neighbours_2d(x, idx)
             for i in range(self.param_handler.num_phenotypes):
@@ -97,7 +97,7 @@ class ProblemController(ABC):
             with Pool(processes=self.param_handler.num_cpu) as pool:
                 async_results = [pool.apply_async(self.par_3d, args=(game_matrix, i)) for i in range(self.param_handler.population_length)]
                 results = [ar.get() for ar in async_results]
-            return np.array(results)
+            return np.array(results).T
 
         else:
             fit_array = np.zeros([self.param_handler.population_length] * self.param_handler.num_dim)
