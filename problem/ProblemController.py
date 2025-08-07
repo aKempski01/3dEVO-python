@@ -54,7 +54,7 @@ class ProblemController(ABC):
             with Pool(processes=self.param_handler.num_cpu) as pool:
                 async_results = [pool.apply_async(self.par_2d, args=(game_matrix, i)) for i in range(self.param_handler.population_length)]
                 results = [ar.get() for ar in async_results]
-            return np.array(results).T
+            return np.array(results)
 
         else:
             fit_array = np.zeros([self.param_handler.population_length] * self.param_handler.num_dim)
@@ -74,16 +74,14 @@ class ProblemController(ABC):
 
     def par_2d(self, game_matrix, idx: int):
         fit_array = np.zeros(self.param_handler.population_length)
-        for x in range(self.param_handler.population_length):
-            neighbours = self.neighbour_controller.get_cell_neighbours_2d(x, idx)
+        for y in range(self.param_handler.population_length):
+            neighbours = self.neighbour_controller.get_cell_neighbours_2d(idx, y)
             for i in range(self.param_handler.num_phenotypes):
                 for j in range(self.param_handler.num_phenotypes):
-                    # todo
-                    # sprawdzić czy tu cos się nie psuje
-                    f = self.fitness_problem(i, j) * game_matrix[x, idx, i].copy()
+                    f = self.fitness_problem(i, j) * game_matrix[idx, y, i].copy()
                     if f != 0:
                         for n in neighbours:
-                            fit_array[x] += f * game_matrix[n[0], n[1], j].copy()
+                            fit_array[y] += f * game_matrix[n[0], n[1], j].copy()
 
         return fit_array
 
@@ -97,7 +95,7 @@ class ProblemController(ABC):
             with Pool(processes=self.param_handler.num_cpu) as pool:
                 async_results = [pool.apply_async(self.par_3d, args=(game_matrix, i)) for i in range(self.param_handler.population_length)]
                 results = [ar.get() for ar in async_results]
-            return np.array(results).T
+            return np.array(results)
 
         else:
             fit_array = np.zeros([self.param_handler.population_length] * self.param_handler.num_dim)
@@ -118,15 +116,15 @@ class ProblemController(ABC):
 
     def par_3d(self, game_matrix, idx: int):
         fit_array = np.zeros([self.param_handler.population_length] * (self.param_handler.num_dim - 1))
-        for x in range(self.param_handler.population_length):
-            for y in range(self.param_handler.population_length):
-                neighbours = self.neighbour_controller.get_cell_neighbours_3d(x, y, idx)
+        for y in range(self.param_handler.population_length):
+            for z in range(self.param_handler.population_length):
+                neighbours = self.neighbour_controller.get_cell_neighbours_3d(idx, y, z)
                 for i in range(self.param_handler.num_phenotypes):
                     for j in range(self.param_handler.num_phenotypes):
-                        f = self.fitness_problem(i, j) * game_matrix[x, y, idx, i].copy()
+                        f = self.fitness_problem(i, j) * game_matrix[idx, y, z, i].copy()
                         if f != 0:
                             for n in neighbours:
-                                fit_array[x][y] += f * game_matrix[n[0], n[1], n[2], j].copy()
+                                fit_array[y][z] += f * game_matrix[n[0], n[1], n[2], j].copy()
 
         return fit_array
 
