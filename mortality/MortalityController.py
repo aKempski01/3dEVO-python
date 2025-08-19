@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 
 from abc import ABC, abstractmethod
@@ -10,5 +12,5 @@ class MortalityController(ABC):
         self.param_handler = param_handler
 
     @abstractmethod
-    def get_cells_to_update(self, game_matrix: np.ndarray) -> np.ndarray:
+    def get_cells_to_update(self, game_matrix: np.ndarray) -> List[np.ndarray]:
         pass

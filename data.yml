@@ -5,11 +5,11 @@ population_length: 16
 num_dim: 2
 
 #True False
-run_in_parallel: True
+run_in_parallel: False
 num_cpu: 2
 
 # Synch; Asynch; SemiSynch
-mortality_strategy: SemiSynch
+mortality_strategy: Asynch
 
 mortality_rate: 0.1
 

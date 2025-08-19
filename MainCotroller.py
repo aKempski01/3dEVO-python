@@ -71,10 +71,11 @@ class MainCotroller:
             print("-----------------------")
             s = time.time()
 
+            indices = self.mortality_controller.get_cells_to_update(game_matrix)
+
             self.__update_resource_function(epoch, game_matrix)
 
-            pay_off_matrix = self.problem_controller.fitness_function(game_matrix)
-            indices = self.mortality_controller.get_cells_to_update(game_matrix)
+            pay_off_matrix = self.problem_controller.fitness_function(game_matrix, indices)
 
             game_matrix = self.reproduction_controller.reproduce(game_matrix, pay_off_matrix, indices)
 
