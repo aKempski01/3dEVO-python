@@ -1,8 +1,8 @@
 experiment_name: take_01
 
-num_epochs: 10
-population_length: 16
-num_dim: 2
+num_epochs: 500
+population_length: 10
+num_dim: 3
 
 #True False
 run_in_parallel: False
@@ -27,8 +27,8 @@ neighbourhood_type: VonNeumann
 
 
 
-problem_name: HawkDoveProblem
-#problem_name: HawkDoveDynamicProblem
+#problem_name: HawkDoveProblem
+problem_name: HawkDoveDynamicProblem
 #problem_name: ApoptosisProblem
 
 
@@ -45,19 +45,21 @@ problem_params:
 initial_matrix: None
 
 initial_probability:
-  0: 0.5
-  1: 0.5
+  0: 0.58
+  1: 0.42
 #  2: 0.33
 
 
-# None, StepResourceFunction, CosResourceFunction, LinearResourceFunction, ReciprocalResourceFunction, QuadraticResourceFunction
-chosen_resource_function: QuadraticResourceFunction
+# None, StepResourceFunction, CosResourceFunction, LinearResourceFunction, ReciprocalResourceFunction, QuadraticResourceFunction, SingleStepResourceFunction
+chosen_resource_function: SingleStepResourceFunction
 resource_function_params:
   mode: time
   phenotype_to_select: 0
+
   step_initial_value: 0
-  step_inc: 0.1
-  step_epoch: 5
+  step_inc: 1
+  step_epoch: 200
+
   a_param: -1
   b_param: 1
   c_param: 1

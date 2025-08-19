@@ -29,4 +29,29 @@ python main.py --yaml-path "<PATH TO YOUR YAML FILE>"
 python visualise.py 
 ```
 
+## Problem
+### Hawk Dove problem
 
+$\begin{matrix}  & enemy \ Hawk & enemy \ Dove \\ player \ Hawk & (V-C)/2 & V \\ player \ Dove & 0 & V/2 \end{matrix}$
+
+#### yaml command
+```yaml
+problem_name: HawkDoveProblem
+```
+
+### Dynamic Hawk Dove problem
+
+$\begin{matrix}  & enemy \ Hawk & enemy \ Dove \\ player \ Hawk & (V-C)/2 & r * V * 0.25 \\ player \ Dove & 0 & V*0.5*r(+1) \end{matrix}$
+
+#### yaml command
+```yaml
+problem_name: HawkDoveDynamicProblem
+```
+
+## Mortality
+
+## Neighbourhood
+
+## Reproduction
+
+## Resource Function

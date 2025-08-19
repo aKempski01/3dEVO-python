@@ -29,6 +29,7 @@ from resource.CosResourceFunction import CosResourceFunction
 from resource.LinearResourceFunction import LinearResourceFunction
 from resource.ReciprocalResourceFunction import ReciprocalResourceFunction
 from resource.QuadraticResourceFunction import QuadraticResourceFunction
+from resource.SingleStepResourceFunction import SingleStepResourceFunction
 
 from utils.MatrixOperations import get_game_matrix
 from utils.ParamHandler import ParamHandler

@@ -110,7 +110,7 @@ class ProblemController(ABC):
                                 f = self.fitness_problem(i, j, (x, y, z)) * game_matrix[x, y, z, i].copy()
                                 if f != 0:
                                     for n in neighbours:
-                                        fit_array[x][y][z] += f * game_matrix[n[0], n[1], j].copy()
+                                        fit_array[x][y][z] += f * game_matrix[n[0], n[1], n[2], j].copy()
 
             return fit_array
 
