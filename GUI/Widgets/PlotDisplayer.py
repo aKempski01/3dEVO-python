@@ -30,32 +30,34 @@ class MplCanvas(FigureCanvasQTAgg):
         self.fig.clear()
         # self.fig.clf()
         self.axes = []
-        if n_dim == 2:
-            for n in range(n_phenotypes):
-                self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n+1))
-                self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap=self.chosen_cmap), ax=self.axes[n],
-                                     orientation='vertical')
+        # if n_dim == 2:
+        for n in range(n_phenotypes):
+            self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n+1))
+            self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap=self.chosen_cmap), ax=self.axes[n],
+                              orientation='vertical')
 
-        elif n_dim == 3:
-            for n in range(n_phenotypes):
-                self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n + 1, projection='3d'))
-                self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap=self.chosen_cmap), ax=self.axes[n],
-                                  orientation='vertical')
+        # elif n_dim == 3:
+        #     for n in range(n_phenotypes):
+        #         self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n + 1, projection='3d'))
+        #         self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap=self.chosen_cmap), ax=self.axes[n],
+        #                           orientation='vertical')
 
-        else:
-            ValueError("Number of dimensions is not supported.")
+        # else:
+        #     ValueError("Number of dimensions is not supported.")
 
 
 
 class PlotDisplayer(QtWidgets.QWidget):
     __logic_handler: LogicHandler
     displayed_epoch: int = 0
+    displayed_slice: int = 0
     game_matrix: np.ndarray
 
     def __init__(self, logic_handler: LogicHandler):
         super().__init__()
 
         self.__logic_handler = logic_handler
+        self.__update_matrix()
         self.sc = MplCanvas(self, width = 15, height = 15, dpi = 100, n_phenotypes = self.__logic_handler.param_handler.num_phenotypes)
 
 
@@ -81,13 +83,23 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.slider.setMaximum(self.__logic_handler.param_handler.num_epochs)
         self.slider.setSingleStep(1)
 
+        self.slider_slice_label = QLabel("Slice Num: {}".format(self.displayed_slice))
+        self.slice_slider = QSlider(QtCore.Qt.Orientation.Vertical)
+        self.slice_slider.valueChanged.connect(self.__slice_slider_released_signal)
+        self.slice_slider.setMinimum(1)
+        self.slice_slider.setMaximum(self.__logic_handler.param_handler.population_length)
+        self.slice_slider.setSingleStep(1)
 
         self.pageLayout = QVBoxLayout()
+        self.mainLayout = QHBoxLayout()
         self.botLayout = QHBoxLayout()
         self.botLayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignBottom)
 
+        self.mainLayout.addWidget(self.sc)
+        self.mainLayout.addWidget(self.slice_slider)
+
         self.pageLayout.addLayout(self.up_lay)
-        self.pageLayout.addWidget(self.sc)
+        self.pageLayout.addLayout(self.mainLayout)
         self.pageLayout.addLayout(self.botLayout)
 
         self.botLayout.addWidget(self.slider_text)
@@ -105,8 +117,20 @@ class PlotDisplayer(QtWidgets.QWidget):
 
 
         if self.__logic_handler.param_handler is not None:
+
+            if self.__logic_handler.param_handler.num_dim == 2:
+                self.slice_slider.setDisabled(True)
+            else:
+                self.slice_slider.setDisabled(False)
+                self.slice_slider.setMaximum(self.__logic_handler.param_handler.population_length)
+                if self.displayed_slice >= self.__logic_handler.param_handler.population_length:
+                    self.displayed_slice = self.__logic_handler.param_handler.population_length - 1
+                    self.slice_slider.setValue(self.__logic_handler.param_handler.population_length - 1)
+
             self.__update_matrix()
             self.__update_plot()
+
+
 
     def __update_plot(self):
         for n in range(self.__logic_handler.param_handler.num_phenotypes):
@@ -114,10 +138,9 @@ class PlotDisplayer(QtWidgets.QWidget):
 
             if self.__logic_handler.param_handler.num_dim == 2:
                 self.sc.axes[n].imshow(self.game_matrix[:, :, n], vmin=0, vmax=1, cmap=self.sc.chosen_cmap)
+
             elif self.__logic_handler.param_handler.num_dim == 3:
-                idx = np.argwhere(self.game_matrix[:, :, :, n] > -1)
-                c = self.game_matrix[idx[:,0], idx[:,1], idx[:,2], n]
-                self.sc.axes[n].scatter(idx[:,0], idx[:,1], idx[:,2], c=c, vmin=0, vmax=1, cmap=self.sc.chosen_cmap, alpha=0.5)
+                self.sc.axes[n].imshow(self.game_matrix[:, :, self.displayed_slice, n], vmin=0, vmax=1, cmap=self.sc.chosen_cmap)
 
             self.sc.axes[n].title.set_text(self.__logic_handler.param_handler.phenotype_names[n])
 
@@ -135,6 +158,10 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.__update_matrix()
         self.__update_plot()
 
+
+    def __slice_slider_released_signal(self):
+        self.displayed_slice = self.slice_slider.value() - 1
+        self.__update_plot()
 
     def __c_map_changed_signal(self, text: str):
         self.sc.chosen_cmap = text
