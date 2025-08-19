@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import Optional, List
 
 import numpy as np
 
 from neighbourhood.NeighbourController import NeighbourController
-from resource.ResourceFunctionController import ResourceFunctionController
+from resource.ResourceFunctionController import ResourceFunctionController, ResourceMode
 from utils.ParamHandler import ParamHandler
 
 
@@ -18,6 +18,9 @@ class StepResourceFunction(ResourceFunctionController):
         if not hasattr(self.param_handler, "resource_function_params"):
             raise AttributeError("configuration YAML file has no resource function params")
 
+        if self.resource_mode != ResourceMode.TIME:
+            raise AttributeError("Only Time mode is supported for the following resource cost function.")
+
         if 'step_initial_value' not in self.param_handler.resource_function_params.keys() or 'step_inc' not in self.param_handler.resource_function_params.keys() or 'step_epoch' not in self.param_handler.resource_function_params.keys():
             raise AttributeError("configuration YAML file has incorrect parameters")
 
@@ -27,7 +30,7 @@ class StepResourceFunction(ResourceFunctionController):
 
 
 
-    def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None):
+    def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None):
         if (epoch_num + 1) % self.step_epoch == 0:
             self.function_value += self.step_inc
 

@@ -24,8 +24,11 @@ from reproduction.Probabilistic import Probabilistic
 
 
 from resource.ResourceFunctionController import ResourceFunctionController
-from resource.TimeBasedFunctions.StepResourceFunction import StepResourceFunction
-from resource.AmountBasedFunctions.CosAmountResourceFunction import CosAmountResourceFunction
+from resource.StepResourceFunction import StepResourceFunction
+from resource.CosResourceFunction import CosResourceFunction
+from resource.LinearResourceFunction import LinearResourceFunction
+from resource.ReciprocalResourceFunction import ReciprocalResourceFunction
+from resource.QuadraticResourceFunction import QuadraticResourceFunction
 
 from utils.MatrixOperations import get_game_matrix
 from utils.ParamHandler import ParamHandler

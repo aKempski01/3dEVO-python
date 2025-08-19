@@ -50,11 +50,16 @@ initial_probability:
 #  2: 0.33
 
 
-# None, StepResourceFunction, CosAmountResourceFunction
-chosen_resource_function: CosAmountResourceFunction
+# None, StepResourceFunction, CosResourceFunction, LinearResourceFunction, ReciprocalResourceFunction, QuadraticResourceFunction
+chosen_resource_function: QuadraticResourceFunction
 resource_function_params:
-  mode: local
+  mode: time
   phenotype_to_select: 0
   step_initial_value: 0
   step_inc: 0.1
   step_epoch: 5
+  a_param: -1
+  b_param: 1
+  c_param: 1
+  k_param: 1
+  h_param: 0.1
