@@ -1,5 +1,5 @@
 import time
-from typing import Optional
+from typing import Optional, List
 
 import numpy as np
 
@@ -34,7 +34,7 @@ from utils.SaveController import SaveController
 
 # todo:
 # wczytywanie binarek
-# liczyć fitness tylko dla tych co dla zastąpienia
+
 
 
 class MainCotroller:
@@ -73,7 +73,7 @@ class MainCotroller:
 
             indices = self.mortality_controller.get_cells_to_update(game_matrix)
 
-            self.__update_resource_function(epoch, game_matrix)
+            self.__update_resource_function(epoch, game_matrix, indices)
 
             pay_off_matrix = self.problem_controller.fitness_function(game_matrix, indices)
 
@@ -134,7 +134,7 @@ class MainCotroller:
             exit("There is no resource function named {}. Make sure, that resource function name is the same as class name and class is included at the top of the file".format(self.param_handler.chosen_resource_function))
 
 
-    def __update_resource_function(self, epoch: int, game_matrix: Optional[np.ndarray] = None):
+    def __update_resource_function(self, epoch: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None):
         if self.resource_function_controller is not None:
-            self.resource_function_controller.update_function_value(epoch, game_matrix)
+            self.resource_function_controller.update_function_value(epoch, game_matrix, indices)
 

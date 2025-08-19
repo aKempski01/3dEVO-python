@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 import numpy as np
 
@@ -56,5 +56,5 @@ class ResourceFunctionController(ABC):
 
 
     @abstractmethod
-    def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None) -> None:
+    def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None) -> None:
         pass

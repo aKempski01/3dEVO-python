@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from poetry.console.commands import self
 
@@ -25,7 +25,7 @@ class CosAmountResourceFunction(ResourceFunctionController):
 
 
 
-    def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None):
+    def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None) -> None:
         if game_matrix is None:
             raise AttributeError("game_matrix parameter is not provided")
 
@@ -41,7 +41,7 @@ class CosAmountResourceFunction(ResourceFunctionController):
             self.function_value = np.cos(H * np.pi / 2)
 
         if self.resource_mode == ResourceMode.LOCAL_AMOUNT:
-            self.__local_update(game_matrix)
+            self.__local_update(game_matrix, indices)
 
         elif self.resource_mode == ResourceMode.GLOBAL_AMOUNT:
             self.__global_update(game_matrix)
@@ -62,23 +62,21 @@ class CosAmountResourceFunction(ResourceFunctionController):
 
 
 
-    def __local_update(self, game_matrix: np.ndarray):
+    def __local_update(self, game_matrix: np.ndarray, indices: List[np.ndarray]):
         mat = np.zeros([self.param_handler.population_length] * self.param_handler.num_dim, dtype=np.float32)
 
         if self.param_handler.num_dim == 2:
-            for x in range(self.param_handler.population_length):
-                for y in range(self.param_handler.population_length):
-                    neighbours = self.neighbour_controller.get_cell_neighbours_2d(x, y)
-                    for n in neighbours:
-                        mat[x, y] += game_matrix[n[0], n[1], self.phenotype_to_select]
+            for xy in indices:
+                neighbours = self.neighbour_controller.get_cell_neighbours_2d(xy[0], xy[1])
+                for n in neighbours:
+                    mat[xy[0], xy[1]] += game_matrix[n[0], n[1], self.phenotype_to_select]
+
 
         elif self.param_handler.num_dim == 3:
-            for x in range(self.param_handler.population_length):
-                for y in range(self.param_handler.population_length):
-                    for z in range(self.param_handler.population_length):
-                        neighbours = self.neighbour_controller.get_cell_neighbours_3d(x, y, z)
-                        for n in neighbours:
-                            mat[x, y, z] += game_matrix[n[0], n[1], n[2], self.phenotype_to_select]
+            for xyz in indices:
+                neighbours = self.neighbour_controller.get_cell_neighbours_3d(xyz[0], xyz[1], xyz[2])
+                for n in neighbours:
+                    mat[xyz[0], xyz[1], xyz[2]] += game_matrix[n[0], n[1], n[2], self.phenotype_to_select]
 
         else:
             raise AttributeError("num_dim parameter is not supported")

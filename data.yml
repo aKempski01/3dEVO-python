@@ -9,7 +9,7 @@ run_in_parallel: False
 num_cpu: 2
 
 # Synch; Asynch; SemiSynch
-mortality_strategy: Asynch
+mortality_strategy: SemiSynch
 
 mortality_rate: 0.1
 
@@ -27,8 +27,8 @@ neighbourhood_type: VonNeumann
 
 
 
-#problem_name: HawkDoveProblem
-problem_name: HawkDoveDynamicProblem
+problem_name: HawkDoveProblem
+#problem_name: HawkDoveDynamicProblem
 #problem_name: ApoptosisProblem
 
 

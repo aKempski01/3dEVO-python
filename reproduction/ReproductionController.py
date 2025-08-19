@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 import numpy as np
 
@@ -16,6 +17,6 @@ class ReproductionController(ABC):
 
 
     @abstractmethod
-    def reproduce(self, game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices: np.ndarray):
+    def reproduce(self, game_matrix: np.ndarray, pay_off_matrix: np.ndarray, indices: List[np.ndarray]):
         pass
 
