@@ -2,6 +2,7 @@ from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QStackedLayout
 
 from GUI.Logic.LogicHandler import LogicHandler
+from GUI.Widgets.AVGPlotDisplayer import AVGPlotDisplayer
 from GUI.Widgets.ExpInfo import ExpInfo
 from GUI.Widgets.PlotDisplayer import PlotDisplayer
 from GUI.Widgets.TimeCourseDisplay import TimeCourseDisplay
@@ -17,6 +18,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.logic_handler = LogicHandler()
         self.plot_displayer = PlotDisplayer(self.logic_handler)
+        self.avg_plot_displayer = AVGPlotDisplayer(self.logic_handler)
         self.exp_info = ExpInfo(self.logic_handler)
         self.time_course = TimeCourseDisplay(self.logic_handler)
 
@@ -39,20 +41,28 @@ class MainWindow(QtWidgets.QWidget):
         self.plot_btn = QtWidgets.QPushButton("Plot Game Matrix")
         self.plot_btn.clicked.connect(lambda: self.switch_page(1))
 
+        self.avg_plot_btn = QtWidgets.QPushButton("Average Game Matrix")
+        self.avg_plot_btn.clicked.connect(lambda: self.switch_page(2))
+
         self.time_course_btn = QtWidgets.QPushButton("Time Course Plot")
-        self.time_course_btn.clicked.connect(lambda: self.switch_page(2))
+        self.time_course_btn.clicked.connect(lambda: self.switch_page(3))
+
+
 
         self.top_layout.addWidget(self.exp_options_combo)
         self.top_layout.addWidget(self.exp_info_btn)
         self.top_layout.addWidget(self.plot_btn)
+        self.top_layout.addWidget(self.avg_plot_btn)
         self.top_layout.addWidget(self.time_course_btn)
 
 
         self.top_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+
         self.stackedLayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         self.stackedLayout.addWidget(self.exp_info)
         self.stackedLayout.addWidget(self.plot_displayer)
+        self.stackedLayout.addWidget(self.avg_plot_displayer)
         self.stackedLayout.addWidget(self.time_course)
 
 
@@ -69,6 +79,9 @@ class MainWindow(QtWidgets.QWidget):
             self.plot_displayer.refresh_layout()
 
         if idx == 2:
+            self.avg_plot_displayer.refresh_layout()
+
+        if idx == 3:
             self.time_course.refresh_layout()
 
         self.stackedLayout.setCurrentIndex(idx)
@@ -84,5 +97,8 @@ class MainWindow(QtWidgets.QWidget):
             self.plot_displayer.refresh_layout()
 
         if self.stackedLayout.currentIndex() == 2:
+            self.avg_plot_displayer.refresh_layout()
+
+        if self.stackedLayout.currentIndex() == 3:
             self.time_course.refresh_layout()
 
