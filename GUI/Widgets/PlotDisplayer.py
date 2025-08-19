@@ -111,6 +111,7 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.refresh_layout()
 
 
+
     def refresh_layout(self):
         self.slider.setMaximum(self.__logic_handler.param_handler.num_epochs)
         self.sc.reload_axes(self.__logic_handler.param_handler.num_phenotypes, self.__logic_handler.param_handler.num_dim)

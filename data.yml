@@ -1,15 +1,15 @@
 experiment_name: take_01
 
 num_epochs: 10
-population_length: 10
-num_dim: 3
+population_length: 16
+num_dim: 2
 
 #True False
 run_in_parallel: True
 num_cpu: 2
 
 # Synch; Asynch; SemiSynch
-mortality_strategy: Synch
+mortality_strategy: SemiSynch
 
 mortality_rate: 0.1
 
@@ -27,8 +27,8 @@ neighbourhood_type: VonNeumann
 
 
 
-problem_name: HawkDoveProblem
-#problem_name: HawkDoveDynamicProblem
+#problem_name: HawkDoveProblem
+problem_name: HawkDoveDynamicProblem
 #problem_name: ApoptosisProblem
 
 
@@ -50,9 +50,11 @@ initial_probability:
 #  2: 0.33
 
 
-# None, StepResourceFunction
-chosen_resource_function: StepResourceFunction
+# None, StepResourceFunction, CosAmountResourceFunction
+chosen_resource_function: CosAmountResourceFunction
 resource_function_params:
+  mode: local
+  phenotype_to_select: 0
   step_initial_value: 0
   step_inc: 0.1
   step_epoch: 5

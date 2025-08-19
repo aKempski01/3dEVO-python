@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from neighbourhood.NeighbourController import NeighbourController
 from problem.ProblemController import ProblemController
@@ -22,7 +22,7 @@ class ApoptosisProblem(ProblemController):
 
     # 0: K, 1: M. 2: N
 
-    def fitness_problem(self, player: int, enemy: int):
+    def fitness_problem(self, player: int, enemy: int, idx: Optional[Tuple[int, int] | Tuple[int, int, int]] = None):
         if player == 0 and enemy == 0:
             return 1 - self.a_param + self.b_param
 

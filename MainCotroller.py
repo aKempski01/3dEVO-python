@@ -24,8 +24,8 @@ from reproduction.Probabilistic import Probabilistic
 
 
 from resource.ResourceFunctionController import ResourceFunctionController
-from resource.StepResourceFunction import StepResourceFunction
-
+from resource.TimeBasedFunctions.StepResourceFunction import StepResourceFunction
+from resource.AmountBasedFunctions.CosAmountResourceFunction import CosAmountResourceFunction
 
 from utils.MatrixOperations import get_game_matrix
 from utils.ParamHandler import ParamHandler
@@ -33,10 +33,8 @@ from utils.SaveController import SaveController
 
 
 # todo:
-# poprawić wizualizacje w 3D
 # wczytywanie binarek
 # liczyć fitness tylko dla tych co dla zastąpienia
-# równoległe nie działa
 
 
 class MainCotroller:
@@ -73,7 +71,7 @@ class MainCotroller:
             print("-----------------------")
             s = time.time()
 
-            self.__update_resource_function(epoch)
+            self.__update_resource_function(epoch, game_matrix)
 
             pay_off_matrix = self.problem_controller.fitness_function(game_matrix)
             indices = self.mortality_controller.get_cells_to_update(game_matrix)
@@ -129,12 +127,13 @@ class MainCotroller:
 
         resource_functions = ResourceFunctionController.__subclasses__()
         try:
-            self.resource_function_controller = [r(self.param_handler) for r in resource_functions if r.__name__ == self.param_handler.chosen_resource_function][0]
+            self.resource_function_controller = [r(self.param_handler, self.neighbour_controller) for r in resource_functions if r.__name__ == self.param_handler.chosen_resource_function][0]
 
         except IndexError:
             exit("There is no resource function named {}. Make sure, that resource function name is the same as class name and class is included at the top of the file".format(self.param_handler.chosen_resource_function))
 
 
-    def __update_resource_function(self, epoch: int):
+    def __update_resource_function(self, epoch: int, game_matrix: Optional[np.ndarray] = None):
         if self.resource_function_controller is not None:
-            self.resource_function_controller.update_function_value(epoch)
+            self.resource_function_controller.update_function_value(epoch, game_matrix)
+

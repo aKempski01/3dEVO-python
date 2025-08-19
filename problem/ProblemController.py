@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from multiprocessing import Pool
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 
 import numpy as np
 
@@ -30,7 +30,7 @@ class ProblemController(ABC):
 
 
     @abstractmethod
-    def fitness_problem(self, player: int, enemy: int) -> float:
+    def fitness_problem(self, player: int, enemy: int, idx: Optional[Tuple[int, int] | Tuple[int, int, int]] = None) -> float:
         pass
 
 
@@ -64,7 +64,7 @@ class ProblemController(ABC):
 
                     for i in range(self.param_handler.num_phenotypes):
                         for j in range(self.param_handler.num_phenotypes):
-                            f = self.fitness_problem(i, j) * game_matrix[x, y, i].copy()
+                            f = self.fitness_problem(i, j, (x,y)) * game_matrix[x, y, i].copy()
 
                             for n in neighbours:
                                 fit_array[x][y] += f * game_matrix[n[0], n[1], j].copy()
@@ -78,7 +78,7 @@ class ProblemController(ABC):
             neighbours = self.neighbour_controller.get_cell_neighbours_2d(idx, y)
             for i in range(self.param_handler.num_phenotypes):
                 for j in range(self.param_handler.num_phenotypes):
-                    f = self.fitness_problem(i, j) * game_matrix[idx, y, i].copy()
+                    f = self.fitness_problem(i, j, (idx, y)) * game_matrix[idx, y, i].copy()
                     if f != 0:
                         for n in neighbours:
                             fit_array[y] += f * game_matrix[n[0], n[1], j].copy()
@@ -106,7 +106,7 @@ class ProblemController(ABC):
 
                         for i in range(self.param_handler.num_phenotypes):
                             for j in range(self.param_handler.num_phenotypes):
-                                f = self.fitness_problem(i, j) * game_matrix[x, y, z, i].copy()
+                                f = self.fitness_problem(i, j, (x, y, z)) * game_matrix[x, y, z, i].copy()
                                 if f != 0:
                                     for n in neighbours:
                                         fit_array[x][y][z] += f * game_matrix[n[0], n[1], j].copy()
@@ -121,7 +121,7 @@ class ProblemController(ABC):
                 neighbours = self.neighbour_controller.get_cell_neighbours_3d(idx, y, z)
                 for i in range(self.param_handler.num_phenotypes):
                     for j in range(self.param_handler.num_phenotypes):
-                        f = self.fitness_problem(i, j) * game_matrix[idx, y, z, i].copy()
+                        f = self.fitness_problem(i, j, (idx, y, z)) * game_matrix[idx, y, z, i].copy()
                         if f != 0:
                             for n in neighbours:
                                 fit_array[y][z] += f * game_matrix[n[0], n[1], n[2], j].copy()

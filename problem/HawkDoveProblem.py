@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 
 from neighbourhood.NeighbourController import NeighbourController
 from problem.ProblemController import ProblemController
@@ -21,7 +21,7 @@ class HawkDoveProblem(ProblemController):
                                 1: "Dove"}
 
 
-    def fitness_problem(self, player: int, enemy: int):
+    def fitness_problem(self, player: int, enemy: int, idx: Optional[Tuple[int, int] | Tuple[int, int, int]] = None):
         if player == 0 and enemy == 0:
             return (self.V_param - self.C_param) / 2
 
