@@ -72,7 +72,6 @@ class LinearResourceFunction(ResourceFunctionController):
                 for n in neighbours:
                     mat[xy[0], xy[1]] += game_matrix[n[0], n[1], self.ph1]
 
-
         elif self.param_handler.num_dim == 3:
             for xyz in indices:
                 neighbours = self.neighbour_controller.get_cell_neighbours_3d(xyz[0], xyz[1], xyz[2])
@@ -84,5 +83,7 @@ class LinearResourceFunction(ResourceFunctionController):
 
         self.function_matrix = mat * self.a_param + self.b_param
 
+
     def __time_update(self, epoch_num: int):
         self.function_value = self.a_param * epoch_num + self.b_param
+

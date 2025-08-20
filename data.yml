@@ -1,6 +1,6 @@
 experiment_name: take_01
 
-num_epochs: 5
+num_epochs: 50
 population_length: 10
 num_dim: 2
 
@@ -33,8 +33,8 @@ problem_name: HawkDoveDynamicProblem
 
 
 problem_params:
-  V_param: 9
-  C_param: 6
+  V_param: 6
+  C_param: 9
 
 #problem_params:
 #  a_param: 0.2
@@ -45,14 +45,14 @@ problem_params:
 initial_matrix: None
 
 initial_probability:
-  Hawk: 0.29
-  Dove: 0.71
+  Hawk: 0.43
+  Dove: 0.57
 
 #  2: 0.33
 
 
 # None, StepResourceFunction, CosResourceFunction, LinearResourceFunction, ReciprocalResourceFunction, QuadraticResourceFunction, SingleStepResourceFunction
-chosen_resource_function: LinearResourceFunction
+chosen_resource_function: QuadraticResourceFunction
 resource_function_params:
   mode: global
 
@@ -66,7 +66,8 @@ resource_function_params:
   step_epoch: 200
 
   a_param: -1
-  b_param: 1
+  b_param: 0
   c_param: 1
+
   k_param: 1
   h_param: 0.1

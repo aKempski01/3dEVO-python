@@ -10,10 +10,11 @@ import numpy as np
 
 
 class QuadraticResourceFunction(ResourceFunctionController):
-    phenotype_to_select: int
     a_param: float
     b_param: float
     c_param: float
+
+    ph1: int
 
 
     def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):
@@ -22,14 +23,18 @@ class QuadraticResourceFunction(ResourceFunctionController):
         if 'a_param' not in self.param_handler.resource_function_params.keys() or 'b_param' not in self.param_handler.resource_function_params.keys() or 'c_param' not in self.param_handler.resource_function_params.keys():
             raise AttributeError("configuration YAML file has incorrect parameters")
 
-        if self.resource_mode != ResourceMode.TIME and 'phenotype_to_select' not in self.param_handler.resource_function_params.keys():
-            raise AttributeError("configuration YAML file has incorrect parameters")
-
-
-        self.phenotype_to_select = self.param_handler.resource_function_params['phenotype_to_select']
         self.a_param = self.param_handler.resource_function_params['a_param']
         self.b_param = self.param_handler.resource_function_params['b_param']
         self.c_param = self.param_handler.resource_function_params['c_param']
+
+
+    def update_phenotype_idx(self):
+        if self.resource_mode != ResourceMode.TIME:
+            if 'ph1' not in self.param_handler.resource_function_params['resource_phenotypes'].keys():
+                raise AttributeError("The ph1 phenotype name is missing. Please fill it inside the resource phenotypes field.")
+
+            else:
+                self.ph1 = self.param_handler.resource_function_params['resource_phenotypes']['ph1']
 
 
     def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None) -> None:
@@ -52,12 +57,13 @@ class QuadraticResourceFunction(ResourceFunctionController):
 
     def __global_update(self, game_matrix: np.ndarray):
         if self.param_handler.num_dim == 2:
-            H = np.sum(game_matrix[:, :, self.phenotype_to_select])
+            H = np.sum(game_matrix[:, :, self.ph1])
         elif self.param_handler.num_dim == 3:
-            H = np.sum(game_matrix[:, :, :, self.phenotype_to_select])
+            H = np.sum(game_matrix[:, :, :, self.ph1])
         else:
             raise AttributeError("num_dim parameter is not supported")
 
+        # H /= self.param_handler.population_length ** self.param_handler.num_dim
         self.function_value = self.a_param * H * H + self.b_param * H + self.c_param
 
 
@@ -69,20 +75,19 @@ class QuadraticResourceFunction(ResourceFunctionController):
             for xy in indices:
                 neighbours = self.neighbour_controller.get_cell_neighbours_2d(xy[0], xy[1])
                 for n in neighbours:
-                    mat[xy[0], xy[1]] += game_matrix[n[0], n[1], self.phenotype_to_select]
+                    mat[xy[0], xy[1]] += game_matrix[n[0], n[1], self.ph1]
 
 
         elif self.param_handler.num_dim == 3:
             for xyz in indices:
                 neighbours = self.neighbour_controller.get_cell_neighbours_3d(xyz[0], xyz[1], xyz[2])
                 for n in neighbours:
-                    mat[xyz[0], xyz[1], xyz[2]] += game_matrix[n[0], n[1], n[2], self.phenotype_to_select]
+                    mat[xyz[0], xyz[1], xyz[2]] += game_matrix[n[0], n[1], n[2], self.ph1]
 
         else:
             raise AttributeError("num_dim parameter is not supported")
 
         self.function_matrix = mat * mat * self.a_param + mat * self.b_param + self.c_param
-
 
     def __time_update(self, epoch_num: int):
         self.function_value = self.a_param * epoch_num * epoch_num + self.b_param * epoch_num + self.c_param
