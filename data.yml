@@ -52,9 +52,9 @@ initial_probability:
 
 
 # None, StepResourceFunction, CosResourceFunction, LinearResourceFunction, ReciprocalResourceFunction, QuadraticResourceFunction, SingleStepResourceFunction
-chosen_resource_function: QuadraticResourceFunction
+chosen_resource_function: CosResourceFunction
 resource_function_params:
-  mode: local
+  mode: time
 
   resource_phenotypes:
     ph1: Hawk
@@ -71,3 +71,8 @@ resource_function_params:
 
   k_param: 1
   h_param: 0.1
+  num_periods: 2
+  average_cos_value: 0
+  offset: 0
+#  offset: -0.25
+

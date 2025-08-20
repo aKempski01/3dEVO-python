@@ -11,13 +11,19 @@ import numpy as np
 
 class CosResourceFunction(ResourceFunctionController):
     ph1: int
+    num_periods: float
+    average_cos_value: float
+    offset: float
 
     def __init__(self, param_handler: ParamHandler, neighbour_controller: NeighbourController):
         super().__init__(param_handler, neighbour_controller)
 
-        if self.resource_mode == ResourceMode.TIME:
-            raise AttributeError("Time mode is not supported for the following resource cost function.")
+        if 'num_periods' not in self.param_handler.resource_function_params.keys() or 'average_cos_value' not in self.param_handler.resource_function_params.keys() or 'offset' not in self.param_handler.resource_function_params.keys():
+            raise AttributeError("configuration YAML file has incorrect parameters")
 
+        self.num_periods = self.param_handler.resource_function_params['num_periods']
+        self.average_cos_value = self.param_handler.resource_function_params['average_cos_value']
+        self.offset = self.param_handler.resource_function_params['offset']
 
     def update_phenotype_idx(self):
         if self.resource_mode != ResourceMode.TIME:
@@ -38,6 +44,9 @@ class CosResourceFunction(ResourceFunctionController):
         elif self.resource_mode == ResourceMode.GLOBAL_AMOUNT:
             self.__global_update(game_matrix)
 
+        elif self.resource_mode == ResourceMode.TIME:
+            self.__time_update(epoch_num)
+
         else:
             raise AttributeError("resource_mode parameter is not supported")
 
@@ -50,7 +59,9 @@ class CosResourceFunction(ResourceFunctionController):
         else:
             raise AttributeError("num_dim parameter is not supported")
 
-        self.function_value = np.cos(H * np.pi / 2)
+        H /= self.param_handler.population_length ** self.param_handler.num_dim
+        self.function_value = self.average_cos_value + np.cos(self.num_periods * H * np.pi * 2 + self.offset*2*np.pi)
+        self.function_value = 1 - self.function_value
 
 
 
@@ -73,4 +84,13 @@ class CosResourceFunction(ResourceFunctionController):
         else:
             raise AttributeError("num_dim parameter is not supported")
 
+        mat /= self.neighbour_controller.get_max_num_neighbours()
+        self.function_matrix = mat * self.num_periods * np.pi * 2 + self.offset * 2 * np.pi
+        self.function_matrix = self.average_cos_value + np.cos(self.function_matrix)
         self.function_matrix = np.cos(mat * np.pi * 0.5)
+        self.function_matrix = 1 - self.function_matrix
+
+
+    def __time_update(self, epoch_num: int):
+        self.function_value = 1 - self.average_cos_value - np.cos(self.num_periods * epoch_num * np.pi * 2 / self.param_handler.num_epochs + self.offset*2*np.pi)
+
