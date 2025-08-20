@@ -34,6 +34,10 @@ class ProblemController(ABC):
         pass
 
 
+    def get_phenotype_names_to_idx(self):
+        return self.phenotype_names
+
+
     def fitness_function(self, game_matrix, indices):
         if self.param_handler.num_dim not in self.supported_num_dims:
             raise ValueError("Number of dimensions not supported.")

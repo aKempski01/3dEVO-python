@@ -10,6 +10,7 @@ class ParamHandler:
     experiment_name: str
     problem_name: str
     problem_params: dict
+    phenotype_names_to_idx: dict
 
     initial_matrix_path: Optional[str] = None
 
@@ -35,6 +36,7 @@ class ParamHandler:
     def __init__(self, yaml_path: str):
         self.initial_probability = None
         self.__load_params_from_yaml(yaml_path)
+
 
     def __load_params_from_yaml(self, yaml_path: str):
 
@@ -99,6 +101,12 @@ class ParamHandler:
 
         else:
             self.chosen_resource_function = "None"
+
+    def update_phenotype_names_to_idx(self):
+        if hasattr(self, 'initial_probability'):
+            ks = list(self.initial_probability.keys()).copy()
+            for k in ks:
+                self.initial_probability[[key for key, val in self.phenotype_names_to_idx.items() if val == k][0]] = self.initial_probability.pop(k)
 
 
     def set_num_phenotypes(self, num_phenotypes: int):

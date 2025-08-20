@@ -15,8 +15,7 @@ pip install requiremens.txt
 ```console
 pip install requiremens_minimal.txt
 ```
-
-## First Run
+## 1. First run
 ### To run an algorithm use a following command
 ```console
 python main.py --yaml-path "<PATH TO YOUR YAML FILE>"
@@ -29,8 +28,13 @@ python main.py --yaml-path "<PATH TO YOUR YAML FILE>"
 python visualise.py 
 ```
 
-## Problem
-### Hawk Dove problem
+## 2. Algorithm overview
+
+## 3. YAML overview
+
+## 4. Implemented problems
+### 4.1 Hawk Dove problem
+Hawk-dove is a state-of-the-art problem from the game theory domain. This problem assumes two phenotypes (decisions), between which players can choose. The fitness matrix is defined by 2 parameters - **V** (value of contest) and **C** (cost of escalated fight). 
 
 $\begin{matrix}  & enemy \ Hawk & enemy \ Dove \\ player \ Hawk & (V-C)/2 & V \\ player \ Dove & 0 & V/2 \end{matrix}$
 
@@ -38,8 +42,26 @@ $\begin{matrix}  & enemy \ Hawk & enemy \ Dove \\ player \ Hawk & (V-C)/2 & V \\
 ```yaml
 problem_name: HawkDoveProblem
 ```
+#### yaml command
+```yaml
+# Example set of parameters
+problem_params:
+  V_param: 9
+  C_param: 6
+```
 
-### Dynamic Hawk Dove problem
+#### yaml command
+```yaml
+# Optional
+# Example set of initial probabilities
+initial_probability:
+  Hawk: 0.29
+  Dove: 0.71
+```
+
+
+### 4.2 Dynamic Hawk Dove problem
+Dynamic Hawk Dove problem is a modification of a well Hawk Dove problem. Apart from **V** and **C** parameters, the dynamic version introduces the **r** (resource function value) parameter. The resource function for this problem must be additionally declared. Parameter **r** might depend on time (number of epochs), amount of selected phenotype in the whole matrix, or amount of a phenotype in a neighbourhood.
 
 $\begin{matrix}  & enemy \ Hawk & enemy \ Dove \\ player \ Hawk & (V-C)/2 & V \\ player \ Dove & r * V * 0.25 & V*0.5*(r+1) \end{matrix}$
 
@@ -47,8 +69,25 @@ $\begin{matrix}  & enemy \ Hawk & enemy \ Dove \\ player \ Hawk & (V-C)/2 & V \\
 ```yaml
 problem_name: HawkDoveDynamicProblem
 ```
+#### yaml command
+```yaml
+# Example set of parameters
+problem_params:
+  V_param: 9
+  C_param: 6
 
-### Apoptosis problem
+```
+
+#### yaml command
+```yaml
+# Optional
+# Example set of initial probabilities
+initial_probability:
+  Hawk: 0.29
+  Dove: 0.71
+```
+
+### 4.3 Apoptosis problem
 $\begin{matrix}  
         & enemy \ K & enemy \ M & enemy \ N \\ 
 player \ K & 1 - a + b & 1 - a & 1-a \\ 
@@ -60,33 +99,51 @@ player \ N & 1+b & 1 & 1
 ```yaml
 problem_name: ApoptosisProblem
 ```
-
-## Mortality
+#### yaml command
+```yaml
+# Example set of parameters
+problem_params:
+  a_param: 0.2
+  b_param: 0.3
+  c_param: 0
+```
+## 5. Mortality
 ### Asynch
 #### Select one random cell for reproduction in an epoch.
+
+#### yaml command
+```yaml
+mortality_strategy: ASynch
+```
 
 
 ### Semi Synch
 #### Each cell each cell has some probability of being selected, given probability by an additional parameter 'mortality_rate'. It is important to note, that random number of cells is selected in each epoch, however in most cases it is close to the N% of all cells.
-
+#### yaml command
+```yaml
+mortality_strategy: SemiSynch
+```
 
 ### Synch
 #### All cells are selected for the reproduction in each epoch.
+#### yaml command
+```yaml
+mortality_strategy: Synch
+```
 
 
-
-## Neighbourhood
+## 6. Neighbourhood
 
 ### Von Neumann
 ### MOORE
 
-## Reproduction
+## 7. Reproduction
 ### Deterministic
 ### Probabilistic
 ### Weighted
 
 
-## Resource Function
+## 8. Resource Function
 
 ### Single Step resource function
 ### Step resource function
@@ -96,4 +153,4 @@ problem_name: ApoptosisProblem
 
 ### Cosinus resource function
 
-
+## 9. Implemented parallelism

@@ -1,8 +1,8 @@
 experiment_name: take_01
 
-num_epochs: 500
+num_epochs: 5
 population_length: 10
-num_dim: 3
+num_dim: 2
 
 #True False
 run_in_parallel: False
@@ -45,8 +45,9 @@ problem_params:
 initial_matrix: None
 
 initial_probability:
-  0: 0.58
-  1: 0.42
+  Hawk: 0.29
+  Dove: 0.71
+
 #  2: 0.33
 
 
@@ -54,7 +55,11 @@ initial_probability:
 chosen_resource_function: SingleStepResourceFunction
 resource_function_params:
   mode: time
-  phenotype_to_select: 0
+
+  resource_phenotypes:
+    ph1: Hawk
+    ph2: Dove
+
 
   step_initial_value: 0
   step_inc: 1

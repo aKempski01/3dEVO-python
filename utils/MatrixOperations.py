@@ -25,7 +25,7 @@ def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
         game_matrix = np.random.random([ph.population_length] * 2 + [ph.num_phenotypes])
 
         for i in range(ph.num_phenotypes):
-            w = list(ph.initial_probability.values())[i]/np.sum(game_matrix[:, :, i])
+            w = ph.initial_probability[i] / np.sum(game_matrix[:, :, i])
             game_matrix[:, :, i] *= w
 
         gm = np.sum(game_matrix, axis=-1)
@@ -42,7 +42,7 @@ def get_game_matrix_2d(ph: ParamHandler) -> np.ndarray:
 
         for i in range(ph.num_phenotypes - 1):
             idx = np.argwhere(np.sum(game_matrix, axis=-1) == 0)
-            idx = idx[random.sample(range(0, idx.shape[0] - 1), int(ph.population_length ** ph.num_dim * list(ph.initial_probability.values())[i])), :]
+            idx = idx[random.sample(range(0, idx.shape[0] - 1), int(ph.population_length ** ph.num_dim * ph.initial_probability[i])), :]
 
             game_matrix[idx[:, 0], idx[:, 1], i] = 1
 
@@ -62,8 +62,9 @@ def get_game_matrix_3d(ph: ParamHandler):
         game_matrix = np.random.random([ph.population_length] * ph.num_dim + [ph.num_phenotypes])
 
         for i in range(ph.num_phenotypes):
-            w = list(ph.initial_probability.values())[i]/np.sum(game_matrix[:, :, i])
-            game_matrix[:, :, i] *= w
+            w = ph.initial_probability[i] / np.sum(game_matrix[:, :, :, i])
+            # w = list(ph.initial_probability.values())[i]/np.sum(game_matrix[:, :, i])
+            game_matrix[:, :, :, i] *= w
 
         gm = np.sum(game_matrix, axis=-1)
         for i in range(ph.num_phenotypes):
@@ -79,7 +80,7 @@ def get_game_matrix_3d(ph: ParamHandler):
             idx = np.argwhere(np.sum(game_matrix, axis=-1) == 0)
 
             idx = idx[random.sample(range(0, idx.shape[0] - 1),
-                                    int(ph.population_length ** ph.num_dim * list(ph.initial_probability.values())[i])), :]
+                                    int(ph.population_length ** ph.num_dim * ph.initial_probability[i])), :]
 
             game_matrix[idx[:, 0], idx[:, 1], idx[:, 2], i] = 1
 

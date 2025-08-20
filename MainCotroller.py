@@ -60,7 +60,8 @@ class MainCotroller:
         self.__get_mortality()
         self.__get_reproduction()
 
-
+        self.param_handler.phenotype_names_to_idx = self.problem_controller.get_phenotype_names_to_idx()
+        self.param_handler.update_phenotype_names_to_idx()
         self.param_handler.set_num_phenotypes(self.problem_controller.num_phenotypes)
         self.save_controller = SaveController(self.param_handler)
 
