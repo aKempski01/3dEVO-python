@@ -38,3 +38,6 @@ class HawkDoveDynamicProblem(ProblemController):
 
         elif player == 1 and enemy == 1:
             return (r+1) * self.V_param * 0.5
+
+        else:
+            raise Exception('Invalid player or enemy number')

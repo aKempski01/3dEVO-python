@@ -63,6 +63,10 @@ class MainCotroller:
         self.param_handler.phenotype_names_to_idx = self.problem_controller.get_phenotype_names_to_idx()
         self.param_handler.update_phenotype_names_to_idx()
         self.param_handler.set_num_phenotypes(self.problem_controller.num_phenotypes)
+
+        if self.resource_function_controller is not None:
+            self.resource_function_controller.update_phenotype_idx()
+
         self.save_controller = SaveController(self.param_handler)
 
 
@@ -137,7 +141,6 @@ class MainCotroller:
 
         except IndexError:
             exit("There is no resource function named {}. Make sure, that resource function name is the same as class name and class is included at the top of the file".format(self.param_handler.chosen_resource_function))
-
 
     def __update_resource_function(self, epoch: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None):
         if self.resource_function_controller is not None:

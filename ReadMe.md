@@ -144,6 +144,11 @@ mortality_strategy: Synch
 
 
 ## 8. Resource Function
+The parameter **r**, which might be used in dynamic problems to adjust the values of game matrix, is a result of function **R(x)**, where x can be a current epoch value, amount of a selected phenotype in the neighbourhood, or amount of a selected phenotype in the whole game matrix.
+The resource function operates in 3 modes:
+* local
+* global
+* time
 
 ### Single Step resource function
 ### Step resource function

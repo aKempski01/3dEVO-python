@@ -32,7 +32,6 @@ class ResourceFunctionController(ABC):
         if "mode" not in self.param_handler.resource_function_params.keys():
             raise AttributeError("configuration YAML file is lacking a 'mode' parameter")
 
-
         if self.param_handler.resource_function_params["mode"] == 'time':
             self.resource_mode = ResourceMode.TIME
         elif self.param_handler.resource_function_params["mode"] == 'local':
@@ -41,6 +40,10 @@ class ResourceFunctionController(ABC):
             self.resource_mode = ResourceMode.GLOBAL_AMOUNT
         else:
             raise AttributeError("configuration YAML file has a typo in a 'mode' parameter - available modes: 'time', 'local', 'global' ")
+
+        if self.resource_mode != ResourceMode.TIME:
+            if 'resource_phenotypes' not in self.param_handler.resource_function_params.keys():
+                raise AttributeError("configuration YAML file has incorrect parameters")
 
 
 
@@ -57,4 +60,8 @@ class ResourceFunctionController(ABC):
 
     @abstractmethod
     def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None) -> None:
+        pass
+
+    @abstractmethod
+    def update_phenotype_idx(self) -> None:
         pass

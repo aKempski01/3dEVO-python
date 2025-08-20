@@ -52,9 +52,9 @@ initial_probability:
 
 
 # None, StepResourceFunction, CosResourceFunction, LinearResourceFunction, ReciprocalResourceFunction, QuadraticResourceFunction, SingleStepResourceFunction
-chosen_resource_function: SingleStepResourceFunction
+chosen_resource_function: LinearResourceFunction
 resource_function_params:
-  mode: time
+  mode: global
 
   resource_phenotypes:
     ph1: Hawk
