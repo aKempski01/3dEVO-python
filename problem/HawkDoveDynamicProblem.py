@@ -30,10 +30,10 @@ class HawkDoveDynamicProblem(ProblemController):
         if player == 0 and enemy == 0:
             return (self.V_param - self.C_param) / 2
 
-        elif player == 1 and enemy == 0:
+        elif player == 0 and enemy == 1:
             return r * self.V_param * 0.25
 
-        elif player == 0 and enemy == 1:
+        elif player == 1 and enemy == 0:
             return self.V_param
 
         elif player == 1 and enemy == 1:

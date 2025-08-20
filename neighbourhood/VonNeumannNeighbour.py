@@ -9,6 +9,11 @@ class VonNeumann(NeighbourController):
     def __init__(self, param_handler: ParamHandler):
         super().__init__(param_handler)
 
+    def get_max_num_neighbours(self):
+        if self.param_handler.num_dim == 2:
+            return 4
+        elif self.param_handler.num_dim == 3:
+            return 6
 
     def get_cell_neighbours_2d(self, x: int, y: int) -> np.ndarray:
         neighbours = np.array([[1, 0],

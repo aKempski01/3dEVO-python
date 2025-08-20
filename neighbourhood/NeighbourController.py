@@ -20,3 +20,6 @@ class NeighbourController(ABC):
         pass
 
 
+    @abstractmethod
+    def get_max_num_neighbours(self) -> int:
+        pass

@@ -63,7 +63,9 @@ class ReciprocalResourceFunction(ResourceFunctionController):
         else:
             raise AttributeError("num_dim parameter is not supported")
 
+        H /= self.param_handler.population_length ** self.param_handler.num_dim
         self.function_value = self.k_param + self.a_param / (H - self.h_param)
+        self.function_matrix = 1 - self.function_matrix
 
 
 
@@ -86,9 +88,13 @@ class ReciprocalResourceFunction(ResourceFunctionController):
         else:
             raise AttributeError("num_dim parameter is not supported")
 
+        mat /= self.neighbour_controller.get_max_num_neighbours()
+
         self.function_matrix = mat - self.h_param
         self.function_matrix = self.a_param / self.function_matrix
         self.function_matrix += self.k_param
+        self.function_matrix = 1 - self.function_matrix
+
 
 
     def __time_update(self, epoch_num: int):
