@@ -44,7 +44,7 @@ class Weighted(ReproductionController):
                 new_val += game_matrix[neighbours[i][0], neighbours[i][1], :] * fit_list[i]
 
             new_val /= np.sum(new_val)
-            _gm[idx[0], idx[1], :] = new_val
+            _gm[idx[0], idx[1], :] = new_val.copy()
         return _gm
 
 
@@ -69,6 +69,6 @@ class Weighted(ReproductionController):
                 new_val += game_matrix[neighbours[i, 0], neighbours[i, 1], neighbours[i, 2], :] * fit_list[i]
 
             new_val /= np.sum(new_val)
-            _gm[idx[0], idx[1], idx[2], :] = new_val
+            _gm[idx[0], idx[1], idx[2], :] = new_val.copy()
         return _gm
 

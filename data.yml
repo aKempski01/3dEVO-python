@@ -1,11 +1,11 @@
 experiment_name: take_01
 
-num_epochs: 50
+num_epochs: 500
 population_length: 10
 num_dim: 2
 
 #True False
-run_in_parallel: False
+run_in_parallel: True
 num_cpu: 2
 
 # Synch; Asynch; SemiSynch
@@ -14,21 +14,21 @@ mortality_strategy: SemiSynch
 mortality_rate: 0.1
 
 #Deterministic; Probabilistic; Weighted
-reproduction_strategy_name: Deterministic
+reproduction_strategy_name: Probabilistic
 
-num_cells_for_mean: 4
+num_cells_for_mean: 3
 
 
 #SPATIAL; MIXED
-spatiality_strategy: SPATIAL
+spatiality_strategy: MIXED
 
 #Moore, VonNeumann
-neighbourhood_type: VonNeumann
+neighbourhood_type: Moore
 
 
 
-#problem_name: HawkDoveProblem
-problem_name: HawkDoveDynamicProblem
+problem_name: HawkDoveProblem
+#problem_name: HawkDoveDynamicProblem
 #problem_name: ApoptosisProblem
 
 
@@ -45,8 +45,8 @@ problem_params:
 initial_matrix: None
 
 initial_probability:
-  Hawk: 0.43
-  Dove: 0.57
+  Hawk: 0.5
+  Dove: 0.5
 
 #  2: 0.33
 

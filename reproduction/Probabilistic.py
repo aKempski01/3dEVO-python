@@ -45,7 +45,7 @@ class Probabilistic(ReproductionController):
                     break
 
             best_n = neighbours[best_arg]
-            _gm[idx[0], idx[1]] = game_matrix[best_n[0], best_n[1]]
+            _gm[idx[0], idx[1]] = game_matrix[best_n[0], best_n[1]].copy()
 
         return _gm
 
@@ -71,7 +71,7 @@ class Probabilistic(ReproductionController):
                     break
 
             best_n = neighbours[best_arg]
-            _gm[idx[0], idx[1], idx[2]] = game_matrix[best_n[0], best_n[1], best_n[2]]
+            _gm[idx[0], idx[1], idx[2]] = game_matrix[best_n[0], best_n[1], best_n[2]].copy()
 
         return _gm
 
