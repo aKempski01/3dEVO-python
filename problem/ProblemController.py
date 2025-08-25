@@ -137,14 +137,15 @@ class ProblemController(ABC):
 
     def explode_indices_2d(self, indices: List[Tuple[int, int]]) -> List[np.ndarray[int, int]]:
         idx = indices.copy()
-        for i in idx:
-            n = self.neighbour_controller.get_cell_neighbours_2d(i[0], i[1])
-            indices.extend(n)
 
-        indices = list(np.unique(np.array(indices), axis=0))
+        for i in indices:
+            n = self.neighbour_controller.get_cell_neighbours_2d(i[0], i[1])
+            idx.extend(n)
+
+        idx = list(np.unique(np.array(idx), axis=0))
 
         # indices = list(set(indices))
-        return indices
+        return idx
 
     def explode_indices_3d(self, indices: List[Tuple[int, int]]) -> List[np.ndarray[int, int]]:
         idx = indices.copy()
