@@ -131,7 +131,7 @@ class MainCotroller:
 
     def __get_resource_function(self):
 
-        if self.param_handler.reproduction_strategy_name == "None":
+        if self.param_handler.chosen_resource_function == "None":
             self.resource_function_controller = None
             return
 
