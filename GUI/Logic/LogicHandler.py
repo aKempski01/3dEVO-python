@@ -1,5 +1,6 @@
 from typing import List, Optional
 import glob
+import yaml
 
 import numpy as np
 
@@ -50,18 +51,31 @@ class LogicHandler:
 
 
     def get_history_by_name(self, name: str):
-        history = np.zeros((self.param_handler.num_epochs+1, self.param_handler.num_phenotypes))
+        with open(name+ "/data.yaml", 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
 
-        for e in range(self.param_handler.num_epochs+1):
-            arr = np.load(self.chosen_exp + '/epoch_'+str(e)+'.npy')
+
+        history = np.zeros((data['num_epochs']+1, data['num_phenotypes']))
+
+        for e in range(data['num_epochs']+1):
+            arr = np.load(name + '/epoch_'+str(e)+'.npy')
 
             if self.param_handler.num_dim == 2:
-                history[e, :] = [np.sum(arr[:, :, i]) for i in range(self.param_handler.num_phenotypes)]
+                history[e, :] = [np.sum(arr[:, :, i]) for i in range(data['num_phenotypes'])]
 
             elif self.param_handler.num_dim == 3:
-                history[e, :] = [np.sum(arr[:, :, :, i]) for i in range(self.param_handler.num_phenotypes)]
+                history[e, :] = [np.sum(arr[:, :, :, i]) for i in range(data['num_phenotypes'])]
 
 
-        history /= self.param_handler.population_length**self.param_handler.num_dim
+        history /= data['population_length'] ** data['num_dim']
 
         return history
+
+    def get_phenotypes_by_name(self, name: str):
+        names = []
+        with open(name+ "/data.yaml", 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
+            for i in range(data['num_phenotypes']):
+                names.append(data['phenotype_names'][i])
+        return names
+

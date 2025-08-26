@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox, QCheckBox, QPushButton
@@ -6,7 +7,7 @@ from matplotlib.figure import Figure
 from poetry.console.commands import self
 import matplotlib as mpl
 from superqt import QLabeledRangeSlider, QCollapsible
-
+import scipy.stats as stats
 
 
 from GUI.Logic.LogicHandler import LogicHandler
@@ -29,7 +30,9 @@ class MplCanvas(FigureCanvasQTAgg):
 class AVGTimeCourseDisplay(QtWidgets.QWidget):
     __logic_handler: LogicHandler
     __experiment_names: dict
+    __phenotype_names: list
 
+    hist_sum: np.array
     history: np.ndarray
 
     normalize_plot: bool = True
@@ -48,10 +51,16 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
         self.save_btn = QPushButton("Save plot")
         self.save_btn.pressed.connect(self.save_plot_signal)
 
+        self.dispersion_box = QComboBox()
+        self.dispersion_box.addItems(["St. Dev.", "CI", "IQR"])
+        self.dispersion_box.currentIndexChanged.connect(self.update_plot)
+
+
         self.choose_plot_collapsible = QCollapsible("Choose experiments to average")
 
         self.top_lay.addWidget(self.set_norm_btn)
         self.top_lay.addWidget(self.save_btn)
+        self.top_lay.addWidget(self.dispersion_box)
         self.top_lay.addWidget(self.choose_plot_collapsible)
         self.top_lay.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
@@ -70,23 +79,29 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
         self.__load_experiment_names()
         self.__update_collapsible()
-
-        self.refresh_layout()
+        self.hist_sum = None
+        self.__phenotype_names = []
 
 
     def refresh_layout(self):
-
-        if self.__logic_handler.param_handler is not None:
-            self.update_history()
-            self.update_plot()
-
+        self.update_plot()
 
     def update_plot(self):
-        self.update_history()
         self.sc.ax.cla()
-        self.sc.ax.plot(self.history, label = self.__logic_handler.param_handler.phenotype_names.values())
+
+        if self.hist_sum is None or len(self.hist_sum) == 0:
+            self.sc.draw()
+            return
+
+        yerr = self.__get_yerr(plots=self.plots)
+        for p in range(self.hist_sum.shape[-1]):
+            self.sc.ax.errorbar(range(len(self.hist_sum)), self.hist_sum[:, p], yerr = yerr[:, p], label=self.__phenotype_names[p])
+
+        # self.sc.ax.errorbar(range(len(hist)), hist[:, 1], yerr = yerr[:, 1])
+
+        # self.sc.ax.plot(self.history, label = self.__logic_handler.param_handler.phenotype_names.values())
         self.sc.ax.legend()
-        self.sc.ax.title.set_text("time plot")
+        self.sc.ax.title.set_text("averaged time plot")
 
         if self.normalize_plot:
             self.sc.ax.set_ylim(-0.1, 1.1)
@@ -95,23 +110,33 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
         self.sc.draw()
 
 
-    def update_history(self):
-        self.history = self.__logic_handler.get_history()
-
-
-    def normalize_plot_check_signal(self):
-        self.normalize_plot = not self.normalize_plot
-        self.update_plot()
-
-
-    def save_plot_signal(self):
-        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "history")
-
 
     def __load_experiment_names(self):
         self.experiment_names = {}
         for e in self.__logic_handler.experiment_list:
             self.experiment_names[e] = False
+
+
+    def __load_experiment_plots(self):
+        plots = []
+        num_c = 0
+        for c in self.checkboxes:
+            if c.isChecked():
+                plots.append(self.__logic_handler.get_history_by_name(c.text()))
+                num_c += 1
+        if num_c != 0:
+            self.hist_sum = np.zeros_like(plots[0])
+            for p in plots:
+                self.hist_sum += p
+            self.hist_sum /= num_c
+
+            self.plots = np.array(plots)
+
+            self.__phenotype_names = self.__logic_handler.get_phenotypes_by_name(self.checkboxes[0].text())
+
+        else:
+            self.hist_sum = None
+        self.update_plot()
 
 
     def __update_collapsible(self):
@@ -120,13 +145,32 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
         for k, v in self.experiment_names.items():
             checkbox = QCheckBox(k)
             checkbox.setChecked(v)
-            checkbox.checkStateChanged.connect(self.__checkbox_signal)
+            checkbox.checkStateChanged.connect(self.__load_experiment_plots)
 
             self.checkboxes.append(checkbox)
             self.choose_plot_collapsible.addWidget(checkbox)
 
-    def __checkbox_signal(self, checkbox):
-        for c in self.checkboxes:
-            print(c.isChecked())
+    def __get_yerr(self, plots):
+        if self.dispersion_box.currentText() == "St. Dev.":
+            return np.std(self.plots, axis=0)
 
+
+        if self.dispersion_box.currentText() == "CI":
+            m, s, n = np.mean(plots, axis=0), np.std(plots, axis = 0, ddof=1), plots.shape[0]
+            t = stats.t.ppf(0.95, df=n - 1)
+            e = t * (s / np.sqrt(n))
+            return e
+
+
+        if self.dispersion_box.currentText() == "IQR":
+            return stats.iqr(plots, axis=0)
+
+
+    def normalize_plot_check_signal(self):
+        self.normalize_plot = not self.normalize_plot
+        self.update_plot()
+
+
+    def save_plot_signal(self):
+        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "avg_hist_err")
 
