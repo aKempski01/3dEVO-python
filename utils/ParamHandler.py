@@ -108,7 +108,7 @@ class ParamHandler:
             for k in ks:
                 self.initial_probability[[key for key, val in self.phenotype_names_to_idx.items() if val == k][0]] = self.initial_probability.pop(k)
 
-        if hasattr(self, 'resource_function_params') and 'resource_phenotypes' in self.resource_function_params.keys():
+        if hasattr(self, 'resource_function_params') and 'resource_phenotypes' in self.resource_function_params.keys() and self.chosen_resource_function != 'None':
             for k, v in list(self.resource_function_params['resource_phenotypes'].items()):
                 self.resource_function_params['resource_phenotypes'][k] = [key for key, val in self.phenotype_names_to_idx.items() if val == v][0]
 

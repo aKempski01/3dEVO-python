@@ -9,7 +9,7 @@ import matplotlib as mpl
 from matplotlib import pyplot as plt
 from GUI.Logic.LogicHandler import LogicHandler
 from GUI.utils.save_functions import save_plt
-from superqt import QLabeledRangeSlider
+from superqt import QLabeledRangeSlider, QCollapsible
 
 
 
@@ -171,12 +171,7 @@ class AVGPlotDisplayer(QtWidgets.QWidget):
 
 
     def __save_btn_pressed_signal(self):
-        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.displayed_epoch))
+        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.first_epoch) + "-"+s)
 
 
-    def explode(self, data):
-        size = np.array(data.shape) * 2
-        data_e = np.zeros(size - 1, dtype=data.dtype)
-        data_e[::2, ::2, ::2] = data
-        return data_e
 

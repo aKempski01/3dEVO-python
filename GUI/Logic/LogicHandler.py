@@ -48,3 +48,20 @@ class LogicHandler:
 
         return history
 
+
+    def get_history_by_name(self, name: str):
+        history = np.zeros((self.param_handler.num_epochs+1, self.param_handler.num_phenotypes))
+
+        for e in range(self.param_handler.num_epochs+1):
+            arr = np.load(self.chosen_exp + '/epoch_'+str(e)+'.npy')
+
+            if self.param_handler.num_dim == 2:
+                history[e, :] = [np.sum(arr[:, :, i]) for i in range(self.param_handler.num_phenotypes)]
+
+            elif self.param_handler.num_dim == 3:
+                history[e, :] = [np.sum(arr[:, :, :, i]) for i in range(self.param_handler.num_phenotypes)]
+
+
+        history /= self.param_handler.population_length**self.param_handler.num_dim
+
+        return history

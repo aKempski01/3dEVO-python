@@ -1,7 +1,7 @@
 experiment_name: take_01
 
 num_epochs: 500
-population_length: 10
+population_length: 32
 num_dim: 2
 
 #True False
@@ -14,7 +14,7 @@ mortality_strategy: SemiSynch
 mortality_rate: 0.1
 
 #Deterministic; Probabilistic; Weighted
-reproduction_strategy_name: Probabilistic
+reproduction_strategy_name: Deterministic
 
 num_cells_for_mean: 3
 
@@ -47,18 +47,24 @@ initial_matrix: None
 initial_probability:
   Hawk: 0.5
   Dove: 0.5
+#
+#initial_probability:
+#  K: 0.5
+#  M: 0.5
+#  N: 0
 
 #  2: 0.33
 
 
 # None, StepResourceFunction, CosResourceFunction, LinearResourceFunction, ReciprocalResourceFunction, QuadraticResourceFunction, SingleStepResourceFunction
-chosen_resource_function: CosResourceFunction
+chosen_resource_function: None
 resource_function_params:
   mode: time
 
   resource_phenotypes:
     ph1: Hawk
     ph2: Dove
+
 
 
   step_initial_value: 0
