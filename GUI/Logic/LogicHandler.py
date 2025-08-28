@@ -73,9 +73,23 @@ class LogicHandler:
 
     def get_phenotypes_by_name(self, name: str):
         names = []
-        with open(name+ "/data.yaml", 'r') as f:
+        with open(name + "/data.yaml", 'r') as f:
             data = yaml.load(f, Loader=yaml.SafeLoader)
             for i in range(data['num_phenotypes']):
                 names.append(data['phenotype_names'][i])
         return names
 
+
+    def get_yaml_by_name(self, name: str):
+        with open(name+ "/data.yaml", 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
+        return data
+
+    def check_compatibility(self, name: str, num_dim: int, problem_name: str, num_epochs: int, population_length: int):
+        with open(name+ "/data.yaml", 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
+
+        if data['population_length'] != population_length or data['num_dim'] != num_dim or data['num_epochs'] != num_epochs or data['problem_name'] != problem_name:
+            return False
+
+        return True

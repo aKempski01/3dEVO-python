@@ -78,13 +78,28 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
         self.setLayout(self.pageLayout)
 
         self.__load_experiment_names()
-        self.__update_collapsible()
+
+        self.checkboxes = []
+        self.button_select_all = QPushButton("Select all")
+
+        self.choose_plot_collapsible.addWidget(self.button_select_all)
+
+        for k, v in self.experiment_names.items():
+            checkbox = QCheckBox(k)
+            checkbox.setChecked(v)
+            checkbox.checkStateChanged.connect(self.__load_experiment_plots)
+            checkbox.setDisabled(False)
+
+            self.checkboxes.append(checkbox)
+            self.choose_plot_collapsible.addWidget(checkbox)
+
         self.hist_sum = None
         self.__phenotype_names = []
 
 
     def refresh_layout(self):
         self.update_plot()
+
 
     def update_plot(self):
         self.sc.ax.cla()
@@ -97,15 +112,11 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
         for p in range(self.hist_sum.shape[-1]):
             self.sc.ax.errorbar(range(len(self.hist_sum)), self.hist_sum[:, p], yerr = yerr[:, p], label=self.__phenotype_names[p])
 
-        # self.sc.ax.errorbar(range(len(hist)), hist[:, 1], yerr = yerr[:, 1])
-
-        # self.sc.ax.plot(self.history, label = self.__logic_handler.param_handler.phenotype_names.values())
         self.sc.ax.legend()
         self.sc.ax.title.set_text("averaged time plot")
 
         if self.normalize_plot:
             self.sc.ax.set_ylim(-0.1, 1.1)
-
 
         self.sc.draw()
 
@@ -117,13 +128,19 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
             self.experiment_names[e] = False
 
 
+
     def __load_experiment_plots(self):
         plots = []
         num_c = 0
+        exp_name = ""
+
         for c in self.checkboxes:
             if c.isChecked():
-                plots.append(self.__logic_handler.get_history_by_name(c.text()))
+                exp_name = c.text()
+                plots.append(self.__logic_handler.get_history_by_name(exp_name))
+
                 num_c += 1
+
         if num_c != 0:
             self.hist_sum = np.zeros_like(plots[0])
             for p in plots:
@@ -132,23 +149,13 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
             self.plots = np.array(plots)
 
-            self.__phenotype_names = self.__logic_handler.get_phenotypes_by_name(self.checkboxes[0].text())
+            self.__phenotype_names = self.__logic_handler.get_phenotypes_by_name(exp_name)
 
         else:
             self.hist_sum = None
+
         self.update_plot()
-
-
-    def __update_collapsible(self):
-        self.checkboxes = []
-
-        for k, v in self.experiment_names.items():
-            checkbox = QCheckBox(k)
-            checkbox.setChecked(v)
-            checkbox.checkStateChanged.connect(self.__load_experiment_plots)
-
-            self.checkboxes.append(checkbox)
-            self.choose_plot_collapsible.addWidget(checkbox)
+        self.__update_checkboxes(num_c, exp_name)
 
     def __get_yerr(self, plots):
         if self.dispersion_box.currentText() == "St. Dev.":
@@ -164,6 +171,21 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
         if self.dispersion_box.currentText() == "IQR":
             return stats.iqr(plots, axis=0)
+
+
+    def __update_checkboxes(self, num_c: int, exp_name: str):
+        if num_c == 0:
+            for c in self.checkboxes:
+                c.setDisabled(False)
+
+        if num_c == 1:
+            chosen_yaml = self.__logic_handler.get_yaml_by_name(exp_name)
+            dim, prob_name, num_epochs, pop_len = chosen_yaml['num_dim'], chosen_yaml['problem_name'], chosen_yaml['num_epochs'], chosen_yaml['population_length']
+
+            for c in self.checkboxes:
+                compatible = self.__logic_handler.check_compatibility(c.text(), dim, prob_name, num_epochs, pop_len)
+                c.setDisabled(not compatible)
+
 
 
     def normalize_plot_check_signal(self):

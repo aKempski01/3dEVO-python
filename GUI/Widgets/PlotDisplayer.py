@@ -9,6 +9,8 @@ import matplotlib as mpl
 from matplotlib import pyplot as plt
 from GUI.Logic.LogicHandler import LogicHandler
 from GUI.utils.save_functions import save_plt
+from GUI.utils.toast_handling import show_save_plot_toast
+
 
 class MplCanvas(FigureCanvasQTAgg):
 
@@ -57,7 +59,7 @@ class PlotDisplayer(QtWidgets.QWidget):
         super().__init__()
 
         self.__logic_handler = logic_handler
-        self.__update_matrix()
+        # self.__update_matrix()
         self.sc = MplCanvas(self, width = 15, height = 15, dpi = 100, n_phenotypes = self.__logic_handler.param_handler.num_phenotypes)
 
 
@@ -128,12 +130,14 @@ class PlotDisplayer(QtWidgets.QWidget):
                     self.displayed_slice = self.__logic_handler.param_handler.population_length - 1
                     self.slice_slider.setValue(self.__logic_handler.param_handler.population_length - 1)
 
-            self.__update_matrix()
+            # self.__update_matrix()
             self.__update_plot()
 
 
 
     def __update_plot(self):
+        self.game_matrix = self.__logic_handler.get_array(self.displayed_epoch)
+
         for n in range(self.__logic_handler.param_handler.num_phenotypes):
             self.sc.axes[n].cla()
 
@@ -148,15 +152,15 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.sc.draw()
 
 
-    def __update_matrix(self):
-        if self.__logic_handler.param_handler is not None:
-            self.game_matrix = self.__logic_handler.get_array(self.displayed_epoch)
+    # def __update_matrix(self):
+    #     if self.__logic_handler.param_handler is not None:
+    #         self.game_matrix = self.__logic_handler.get_array(self.displayed_epoch)
 
 
     def __slider_released_signal(self):
         self.displayed_epoch = self.slider.value()
         self.slider_text.setText("Epoch Num: {}".format(self.displayed_epoch))
-        self.__update_matrix()
+        # self.__update_matrix()
         self.__update_plot()
 
 
@@ -171,12 +175,6 @@ class PlotDisplayer(QtWidgets.QWidget):
 
 
     def __save_btn_pressed_signal(self):
-        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.displayed_epoch))
-
-
-    def explode(self, data):
-        size = np.array(data.shape) * 2
-        data_e = np.zeros(size - 1, dtype=data.dtype)
-        data_e[::2, ::2, ::2] = data
-        return data_e
+        save_path = save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.displayed_epoch))
+        show_save_plot_toast(self, save_path)
 

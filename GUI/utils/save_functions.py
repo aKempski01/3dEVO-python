@@ -1,8 +1,10 @@
 from matplotlib import pyplot as plt
 import os
 import glob
+from pyqttoast import Toast, ToastPreset
 
-def save_plt(figure: plt.Figure, filename: str, plot_name: str) -> None:
+
+def save_plt(figure: plt.Figure, filename: str, plot_name: str) -> str:
 
     path = filename + "/plots"
 
@@ -13,5 +15,9 @@ def save_plt(figure: plt.Figure, filename: str, plot_name: str) -> None:
         plot_name = plot_name + "_" + str(len(glob.glob(path + "/" + plot_name + "*.png")))
 
     figure.savefig(path + "/" + plot_name + ".png")
+
+    return path + "/" + plot_name + ".png"
+
+
 
 

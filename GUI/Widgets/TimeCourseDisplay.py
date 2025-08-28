@@ -5,10 +5,13 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from poetry.console.commands import self
 import matplotlib as mpl
+from pyqttoast import Toast, ToastPreset
 
 from GUI.Logic.LogicHandler import LogicHandler
 
 from GUI.utils.save_functions import save_plt
+from GUI.utils.toast_handling import show_save_plot_toast
+
 
 class MplCanvas(FigureCanvasQTAgg):
 
@@ -93,4 +96,6 @@ class TimeCourseDisplay(QtWidgets.QWidget):
 
 
     def save_plot_signal(self):
-        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "history")
+        save_path = save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "history")
+        show_save_plot_toast(self, save_path)
+

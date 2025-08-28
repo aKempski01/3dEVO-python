@@ -11,6 +11,7 @@ from GUI.Logic.LogicHandler import LogicHandler
 from GUI.utils.save_functions import save_plt
 from superqt import QLabeledRangeSlider, QCollapsible
 
+from GUI.utils.toast_handling import show_save_plot_toast
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -171,7 +172,5 @@ class AVGPlotDisplayer(QtWidgets.QWidget):
 
 
     def __save_btn_pressed_signal(self):
-        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.first_epoch) + "-"+s)
-
-
-
+        save_path = save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.first_epoch) + "-"+s)
+        show_save_plot_toast(self, save_path)
