@@ -2,7 +2,7 @@ import os
 import argparse
 import time
 
-from MainCotroller import MainCotroller
+from MainController import MainCotroller
 
 
 def file_path(string):
