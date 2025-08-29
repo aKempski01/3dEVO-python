@@ -7,7 +7,10 @@ from matplotlib.figure import Figure
 from poetry.console.commands import self
 import matplotlib as mpl
 from matplotlib import pyplot as plt
+from GUI.Widgets.Dialogs.Plot3DDialog import PlotWidget
+
 from GUI.Logic.LogicHandler import LogicHandler
+from GUI.Widgets.Plot3D.Plot3D import plot_3d
 from GUI.utils.save_functions import save_plt
 from GUI.utils.toast_handling import show_save_plot_toast
 
@@ -72,10 +75,14 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.save_matrix_btn = QtWidgets.QPushButton("Save image")
         self.save_matrix_btn.pressed.connect(self.__save_btn_pressed_signal)
 
+        self.show_3d_btn = QtWidgets.QPushButton("Show 3D")
+        self.show_3d_btn.pressed.connect(self.__plot_3d)
 
         self.up_lay = QtWidgets.QHBoxLayout()
         self.up_lay.addWidget(self.combo_c_map)
         self.up_lay.addWidget(self.save_matrix_btn)
+        self.up_lay.addWidget(self.show_3d_btn)
+
         self.up_lay.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         self.slider_text = QLabel("Epoch Num: {}".format(self.displayed_epoch))
@@ -132,6 +139,7 @@ class PlotDisplayer(QtWidgets.QWidget):
 
             # self.__update_matrix()
             self.__update_plot()
+            self.__update_3d_button()
 
 
 
@@ -152,11 +160,6 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.sc.draw()
 
 
-    # def __update_matrix(self):
-    #     if self.__logic_handler.param_handler is not None:
-    #         self.game_matrix = self.__logic_handler.get_array(self.displayed_epoch)
-
-
     def __slider_released_signal(self):
         self.displayed_epoch = self.slider.value()
         self.slider_text.setText("Epoch Num: {}".format(self.displayed_epoch))
@@ -174,7 +177,19 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.__update_plot()
 
 
+    def __update_3d_button(self):
+        if self.__logic_handler.param_handler.num_dim == 3:
+            self.show_3d_btn.setDisabled(False)
+
+        else:
+            self.show_3d_btn.setDisabled(True)
+
     def __save_btn_pressed_signal(self):
         save_path = save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.displayed_epoch))
         show_save_plot_toast(self, save_path)
+
+
+    def __plot_3d(self):
+        pw = PlotWidget(self.game_matrix)
+        pw.exec_()
 
