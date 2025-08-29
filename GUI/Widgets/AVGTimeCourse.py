@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from PySide6 import QtWidgets, QtCore
-from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox, QCheckBox, QPushButton
+from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox, QCheckBox, QPushButton, \
+    QStackedWidget
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from poetry.console.commands import self
@@ -11,9 +12,11 @@ import scipy.stats as stats
 
 
 from GUI.Logic.LogicHandler import LogicHandler
+from GUI.Widgets.Custom.SelectClearBtn import SelectClearBtn
+from GUI.Widgets.Dialogs.PutFileNameDialog import CustomDialog
 
-from GUI.utils.save_functions import save_plt
-
+from GUI.utils.save_functions import save_plt, save_common_plot
+from GUI.utils.toast_handling import show_save_plot_toast, error_select_all_toast
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -32,6 +35,8 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
     __experiment_names: dict
     __phenotype_names: list
 
+    num_selected_checkboxes: int
+
     hist_sum: np.array
     history: np.ndarray
 
@@ -39,6 +44,8 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
     def __init__(self, logic_handler: LogicHandler):
         super().__init__()
+
+        self.num_selected_checkboxes = 0
 
         self.__logic_handler = logic_handler
 
@@ -50,6 +57,10 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
         self.save_btn = QPushButton("Save plot")
         self.save_btn.pressed.connect(self.save_plot_signal)
+
+
+
+
 
         self.dispersion_box = QComboBox()
         self.dispersion_box.addItems(["St. Dev.", "CI", "IQR"])
@@ -80,9 +91,10 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
         self.__load_experiment_names()
 
         self.checkboxes = []
-        self.button_select_all = QPushButton("Select all")
 
-        self.choose_plot_collapsible.addWidget(self.button_select_all)
+        self.select_clear_btn = SelectClearBtn(self.select_all_signal, self.clear_selection_signal)
+        self.choose_plot_collapsible.addWidget(self.select_clear_btn)
+
 
         for k, v in self.experiment_names.items():
             checkbox = QCheckBox(k)
@@ -95,6 +107,8 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
         self.hist_sum = None
         self.__phenotype_names = []
+
+        self.disable_buttons(True)
 
 
     def refresh_layout(self):
@@ -131,7 +145,7 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
     def __load_experiment_plots(self):
         plots = []
-        num_c = 0
+        self.num_selected_checkboxes = 0
         exp_name = ""
 
         for c in self.checkboxes:
@@ -139,13 +153,13 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
                 exp_name = c.text()
                 plots.append(self.__logic_handler.get_history_by_name(exp_name))
 
-                num_c += 1
+                self.num_selected_checkboxes += 1
 
-        if num_c != 0:
+        if self.num_selected_checkboxes != 0:
             self.hist_sum = np.zeros_like(plots[0])
             for p in plots:
                 self.hist_sum += p
-            self.hist_sum /= num_c
+            self.hist_sum /= self.num_selected_checkboxes
 
             self.plots = np.array(plots)
 
@@ -155,7 +169,8 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
             self.hist_sum = None
 
         self.update_plot()
-        self.__update_checkboxes(num_c, exp_name)
+        self.__update_checkboxes(exp_name)
+
 
     def __get_yerr(self, plots):
         if self.dispersion_box.currentText() == "St. Dev.":
@@ -173,14 +188,19 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
             return stats.iqr(plots, axis=0)
 
 
-    def __update_checkboxes(self, num_c: int, exp_name: str):
-        if num_c == 0:
+    def __update_checkboxes(self, exp_name: str):
+        if self.num_selected_checkboxes == 0:
             for c in self.checkboxes:
                 c.setDisabled(False)
+                self.disable_buttons(True)
 
-        if num_c == 1:
+
+        if self.num_selected_checkboxes == 1:
             chosen_yaml = self.__logic_handler.get_yaml_by_name(exp_name)
             dim, prob_name, num_epochs, pop_len = chosen_yaml['num_dim'], chosen_yaml['problem_name'], chosen_yaml['num_epochs'], chosen_yaml['population_length']
+            self.disable_buttons(False)
+
+
 
             for c in self.checkboxes:
                 compatible = self.__logic_handler.check_compatibility(c.text(), dim, prob_name, num_epochs, pop_len)
@@ -194,5 +214,37 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
 
     def save_plot_signal(self):
-        save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "avg_hist_err")
+        dlg = CustomDialog()
 
+        if dlg.exec_():
+            filename = dlg.get_file_name()
+            fn = save_common_plot(self.sc.fig, filename)
+            show_save_plot_toast(self, fn)
+
+    def disable_buttons(self, disable: bool) -> None:
+        self.set_norm_btn.setDisabled(disable)
+        self.save_btn.setDisabled(disable)
+
+
+    def select_all_signal(self) -> None:
+        if self.num_selected_checkboxes == 0:
+            chosen_yaml = self.__logic_handler.get_yaml_by_name(self.checkboxes[0].text())
+            dim, prob_name, num_epochs, pop_len = chosen_yaml['num_dim'], chosen_yaml['problem_name'], chosen_yaml['num_epochs'], chosen_yaml['population_length']
+
+            for i in range(1, len(self.checkboxes)):
+                if not self.__logic_handler.check_compatibility(self.checkboxes[i].text(), dim, prob_name, num_epochs, pop_len):
+                    error_select_all_toast(self)
+                    return
+
+        for c in self.checkboxes:
+            if c.isEnabled():
+                c.setChecked(True)
+
+        self.update_plot()
+
+
+    def clear_selection_signal(self) -> None:
+        for c in self.checkboxes:
+            c.setChecked(False)
+
+        self.update_plot()
