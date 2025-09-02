@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from GUI.Widgets.Dialogs.Plot3DDialog import PlotWidget
 
 from GUI.Logic.LogicHandler import LogicHandler
-from GUI.Widgets.Plot3D.Plot3D import plot_3d
+# from GUI.Widgets.Plot3D.Plot3D import plot_3d
 from GUI.utils.save_functions import save_plt
 from GUI.utils.toast_handling import show_save_plot_toast
 
