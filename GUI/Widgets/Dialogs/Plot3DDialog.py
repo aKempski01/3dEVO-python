@@ -13,6 +13,8 @@ from matplotlib.figure import Figure
 from poetry.console.commands import self
 
 from GUI.Logic.LogicHandler import LogicHandler
+from GUI.utils.save_functions import save_plt
+from GUI.utils.toast_handling import show_save_plot_toast
 from utils.Enums import SpatialityStrategy
 
 
@@ -59,7 +61,6 @@ class OptionsRow(QWidget):
         super().__init__()
         self.is_mixed = is_mixed
         self.idx = idx
-
         layout = QHBoxLayout()
 
         idx_label = QLabel(str(idx))
@@ -67,6 +68,7 @@ class OptionsRow(QWidget):
 
         self.color_combo = QComboBox()
         self.color_combo.addItems(self.colors)
+
         if idx < len(self.colors):
             self.color_combo.setCurrentIndex(idx)
 
@@ -84,11 +86,11 @@ class OptionsRow(QWidget):
         layout.addWidget(idx_label)
         layout.addWidget(name_label)
         layout.addWidget(self.color_combo)
-        layout.addWidget(self.checkbox)
 
         if is_mixed:
             layout.addWidget(self.cut_off_slider)
 
+        layout.addWidget(self.checkbox)
         self.setLayout(layout)
 
 
@@ -106,10 +108,14 @@ class OptionsRow(QWidget):
 
 class PlotWidget(QDialog):
     matrix: np.array
+    chosen_exp_name: str
+    displayed_epoch: int
 
-    def __init__(self, matrix: np.array, logic_handler: LogicHandler):
+    def __init__(self, matrix: np.array, logic_handler: LogicHandler, displayed_epoch: int) -> None:
         super().__init__()
         self.matrix = matrix
+        self.chosen_exp_name = logic_handler.chosen_exp
+        self.displayed_epoch = displayed_epoch
 
         layout = QVBoxLayout()
         self.label = QLabel("Another Window")
@@ -121,8 +127,8 @@ class PlotWidget(QDialog):
         top_layout = QHBoxLayout()
         bot_layout = QVBoxLayout()
 
-        save_btn = QPushButton("Save")
-        save_btn.pressed.connect(self.save_signal)
+        self.save_btn = QPushButton("Save")
+        self.save_btn.pressed.connect(self.save_signal)
 
         options_collapsible = QCollapsible("Select phenotypes")
         self.options = []
@@ -136,7 +142,7 @@ class PlotWidget(QDialog):
         update_plot_btn = QPushButton("Update Plot")
         update_plot_btn.pressed.connect(self.update_plot_signal)
 
-        top_layout.addWidget(save_btn)
+        top_layout.addWidget(self.save_btn)
         top_layout.addWidget(options_collapsible)
         top_layout.addWidget(update_plot_btn)
 
@@ -167,6 +173,7 @@ class PlotWidget(QDialog):
         indices = []
         colors = []
         cut_offs = []
+
         for o in self.options:
             idx, is_checked, color, cut_off = o.get_options()
             if is_checked:
@@ -174,9 +181,17 @@ class PlotWidget(QDialog):
                 colors.append(color)
                 cut_offs.append(cut_off)
 
-
-        self.sc.load_matrix(self.matrix, indices, colors, cut_offs, alpha=self.alpha_slider.value())
+        self.sc.load_matrix(self.matrix, indices, colors, cut_offs, self.alpha_slider.value())
         self.sc.draw()
 
+
+        if len(indices) == 0:
+            self.save_btn.setEnabled(False)
+        else:
+            self.save_btn.setEnabled(True)
+
+
+
     def save_signal(self):
-        pass
+        save_path = save_plt(self.sc.fig, self.chosen_exp_name, "matrix_epoch_" + str(self.displayed_epoch))
+        show_save_plot_toast(self, save_path)

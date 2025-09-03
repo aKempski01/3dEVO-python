@@ -189,6 +189,7 @@ class PlotDisplayer(QtWidgets.QWidget):
 
 
     def __plot_3d(self):
-        pw = PlotWidget(self.game_matrix, self.__logic_handler)
+        pw = PlotWidget(self.game_matrix, self.__logic_handler, self.displayed_epoch)
         pw.exec_()
+
 
