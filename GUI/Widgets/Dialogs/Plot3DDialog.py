@@ -33,7 +33,7 @@ class MplCanvas(FigureCanvasQTAgg):
         super().__init__(self.fig)
 
 
-    def load_matrix(self, arr, indices, colors, cut_offs, alpha):
+    def load_matrix(self, arr, indices, colors, cut_offs, alphas):
         self.fig.clear()
         ax = self.fig.add_subplot(111, projection='3d')
 
@@ -43,7 +43,25 @@ class MplCanvas(FigureCanvasQTAgg):
             arr_bin[arr_bin > cut_offs[i]] = 1
             arr_bin[arr_bin != 1] = 0
 
-            ax.voxels(arr_bin[:, :, :, indices[i]], facecolors=(colors[i][0], colors[i][1], colors[i][2], alpha))
+            ax.voxels(arr_bin[:, :, :, indices[i]], facecolors=(colors[i][0], colors[i][1], colors[i][2], alphas[i]))
+
+
+class SliderWithLabel(QWidget):
+    def __init__(self, slider_name):
+        super().__init__()
+        layout = QVBoxLayout()
+
+        self.slider = QLabeledDoubleSlider()
+        self.slider.setRange(0, 1.0)
+        self.slider.setValue(0.5)
+
+        layout.addWidget(QLabel(slider_name))
+        layout.addWidget(self.slider)
+
+        self.setLayout(layout)
+
+    def get_slider_value(self):
+        return self.slider.value()
 
 
 class OptionsRow(QWidget):
@@ -52,7 +70,8 @@ class OptionsRow(QWidget):
 
     color_combo: QComboBox
     checkbox: QCheckBox
-    cut_off_slider: Optional[QLabeledDoubleSlider]
+    cut_off_slider: Optional[SliderWithLabel]
+    opacity_slider: SliderWithLabel
 
     is_mixed: bool
     idx: int
@@ -63,9 +82,6 @@ class OptionsRow(QWidget):
         self.idx = idx
         layout = QHBoxLayout()
 
-        idx_label = QLabel(str(idx))
-        name_label = QLabel(name)
-
         self.color_combo = QComboBox()
         self.color_combo.addItems(self.colors)
 
@@ -75,22 +91,21 @@ class OptionsRow(QWidget):
         else:
             self.color_combo.setCurrentIndex(0)
 
-        self.checkbox = QCheckBox("Display")
+        self.checkbox = QCheckBox(name)
 
         if is_mixed:
-            self.cut_off_slider = QLabeledDoubleSlider()
-            self.cut_off_slider.setRange(0, 1.0)
-            self.cut_off_slider.setValue(0.5)
+            self.cut_off_slider = SliderWithLabel("Binary cut off")
 
+        self.opacity_slider = SliderWithLabel("Opacity")
 
-        layout.addWidget(idx_label)
-        layout.addWidget(name_label)
+        layout.addWidget(self.checkbox)
         layout.addWidget(self.color_combo)
+        layout.addWidget(self.opacity_slider)
 
         if is_mixed:
             layout.addWidget(self.cut_off_slider)
 
-        layout.addWidget(self.checkbox)
+
         self.setLayout(layout)
 
 
@@ -99,9 +114,9 @@ class OptionsRow(QWidget):
         color = self.colors_rgb[[i for i in range(len(self.colors)) if self.colors[i] == self.color_combo.currentText()][0]]
 
         if self.is_mixed:
-            return self.idx, self.checkbox.isChecked(), color, self.cut_off_slider.value()
+            return self.idx, self.checkbox.isChecked(), color, self.cut_off_slider.get_slider_value(), self.opacity_slider.get_slider_value()
 
-        return self.idx, self.checkbox.isChecked(), color, 0.1
+        return self.idx, self.checkbox.isChecked(), color, 0.1, self.opacity_slider.get_slider_value()
 
 
 
@@ -125,7 +140,6 @@ class PlotWidget(QDialog):
 
 
         top_layout = QHBoxLayout()
-        bot_layout = QVBoxLayout()
 
         self.save_btn = QPushButton("Save")
         self.save_btn.pressed.connect(self.save_signal)
@@ -136,6 +150,7 @@ class PlotWidget(QDialog):
             self.options.append(OptionsRow(idx, name, logic_handler.param_handler.spatiality_strategy == SpatialityStrategy.MIXED))
 
         for o in self.options:
+
             options_collapsible.addWidget(o)
 
 
@@ -148,23 +163,9 @@ class PlotWidget(QDialog):
 
         top_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        alpha_label = QLabel("Opacity")
-        self.alpha_slider = QLabeledDoubleSlider(Qt.Orientation.Horizontal)
-        self.alpha_slider.setRange(0, 1)
-        self.alpha_slider.setValue(0.5)
-        # self.alpha_slider.valueChanged.connect(self.alpha_slider_signal)
-
-        bot_layout.addWidget(alpha_label)
-        bot_layout.addWidget(self.alpha_slider)
-        bot_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
-
-
         layout.addLayout(top_layout)
         layout.addWidget(self.sc)
-        layout.addLayout(bot_layout)
 
-        # self.sc.load_matrix(self.matrix, alpha=self.alpha_slider.value())
-        # self.sc.draw()
         self.update_plot_signal()
 
         self.setLayout(layout)
@@ -173,15 +174,16 @@ class PlotWidget(QDialog):
         indices = []
         colors = []
         cut_offs = []
-
+        opacities = []
         for o in self.options:
-            idx, is_checked, color, cut_off = o.get_options()
+            idx, is_checked, color, cut_off, opacity = o.get_options()
             if is_checked:
                 indices.append(idx)
                 colors.append(color)
                 cut_offs.append(cut_off)
+                opacities.append(opacity)
 
-        self.sc.load_matrix(self.matrix, indices, colors, cut_offs, self.alpha_slider.value())
+        self.sc.load_matrix(self.matrix, indices, colors, cut_offs, opacities)
         self.sc.draw()
 
 
