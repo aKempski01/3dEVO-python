@@ -5,7 +5,7 @@ import yaml
 import numpy as np
 
 from utils.ParamHandler import ParamHandler
-
+import os
 
 class LogicHandler:
 
@@ -22,6 +22,7 @@ class LogicHandler:
 
     def refresh_exp(self):
         self.experiment_list = glob.glob("runs/*")
+        self.experiment_list.sort(key=os.path.getmtime, reverse=True)
 
 
     def load_experiment(self, name: str):
@@ -77,6 +78,7 @@ class LogicHandler:
             data = yaml.load(f, Loader=yaml.SafeLoader)
             for i in range(data['num_phenotypes']):
                 names.append(data['phenotype_names'][i])
+
         return names
 
 
