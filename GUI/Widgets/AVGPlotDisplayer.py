@@ -172,5 +172,5 @@ class AVGPlotDisplayer(QtWidgets.QWidget):
 
 
     def __save_btn_pressed_signal(self):
-        save_path = save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.first_epoch) + "-"+s)
+        save_path = save_plt(self.sc.fig, self.__logic_handler.chosen_exp, "matrix_epoch_" + str(self.first_epoch) + "-"+str(self.last_epoch))
         show_save_plot_toast(self, save_path)

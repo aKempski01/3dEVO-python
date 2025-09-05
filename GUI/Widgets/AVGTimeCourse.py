@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from PySide6 import QtWidgets, QtCore
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox, QCheckBox, QPushButton, \
-    QStackedWidget
+    QStackedWidget, QSizePolicy
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from poetry.console.commands import self
@@ -95,6 +96,7 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
         self.select_clear_btn = SelectClearBtn(self.select_all_signal, self.clear_selection_signal)
         self.choose_plot_collapsible.addWidget(self.select_clear_btn)
 
+        v_check_lay = QVBoxLayout()
 
         for k, v in self.experiment_names.items():
             checkbox = QCheckBox(k)
@@ -103,7 +105,19 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
             checkbox.setDisabled(False)
 
             self.checkboxes.append(checkbox)
-            self.choose_plot_collapsible.addWidget(checkbox)
+            v_check_lay.addWidget(checkbox)
+            # self.choose_plot_collapsible.addWidget(checkbox)
+
+        v_check_widget = QtWidgets.QWidget()
+        v_check_widget.setLayout(v_check_lay)
+        scroll = QtWidgets.QScrollArea(self)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        scroll.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
+        scroll.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum))
+        scroll.setWidget(v_check_widget)
+
+        self.choose_plot_collapsible.addWidget(scroll)
 
         self.hist_sum = None
         self.__phenotype_names = []
