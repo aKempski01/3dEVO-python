@@ -14,3 +14,4 @@ class Asynch(MortalityController):
     def get_cells_to_update(self, game_matrix: np.ndarray) -> List[np.ndarray]:
         idx = np.random.randint(0, self.param_handler.population_length, self.param_handler.num_dim)
         return list([idx])
+

@@ -122,11 +122,11 @@ class OptionsRow(QWidget):
 
 
 class PlotWidget(QDialog):
-    matrix: np.array
+    matrix: np.ndarray
     chosen_exp_name: str
     displayed_epoch: int
 
-    def __init__(self, matrix: np.array, logic_handler: LogicHandler, displayed_epoch: int) -> None:
+    def __init__(self, matrix: np.ndarray, logic_handler: LogicHandler, displayed_epoch: int) -> None:
         super().__init__()
         self.matrix = matrix
         self.chosen_exp_name = logic_handler.chosen_exp
