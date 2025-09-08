@@ -168,7 +168,7 @@ mortality_strategy: ASynch
 
 
 ### Semi Synch
-#### Each cell each cell has some probability of being selected, given probability by an additional parameter 'mortality_rate'. It is important to note, that random number of cells is selected in each epoch, however in most cases it is close to the N% of all cells.
+#### Each cell each cell has some probability of being selected, given probability by an additional parameter 'mortality_rate'.  It is important to note, that random number of cells is selected in each epoch, however in most cases it is close to the N% of all cells.
 #### yaml command
 ```yaml
 mortality_strategy: SemiSynch
@@ -183,9 +183,25 @@ mortality_strategy: Synch
 
 
 ## 6. Neighbourhood
+#### The cells are updated based on their neighbor's fitness functions. This is why the proper choice of a neighbourhood is crucial for solving spatial games. 
 
 ### Von Neumann
+#### Only cells that are connected with a full edge/face are selected.
+
+<img src="readme_files/vonNeumann.png" alt="">
+
+```yaml
+neighbourhood_type: VonNeumann
+```
+
 ### MOORE
+#### All surrounding cells are selected.
+
+<img src="readme_files/moore.png" alt="">
+
+```yaml
+neighbourhood_type: Moore
+```
 
 ## 7. Reproduction
 ### Deterministic

@@ -40,10 +40,10 @@ class MainWindow(QtWidgets.QWidget):
         self.exp_info_btn = QtWidgets.QPushButton("Experiment Information")
         self.exp_info_btn.clicked.connect(lambda: self.switch_page(0))
 
-        self.plot_btn = QtWidgets.QPushButton("Plot Game Matrix")
+        self.plot_btn = QtWidgets.QPushButton("Plot Game Array")
         self.plot_btn.clicked.connect(lambda: self.switch_page(1))
 
-        self.avg_plot_btn = QtWidgets.QPushButton("Average Game Matrix")
+        self.avg_plot_btn = QtWidgets.QPushButton("Average Game Array")
         self.avg_plot_btn.clicked.connect(lambda: self.switch_page(2))
 
         self.time_course_btn = QtWidgets.QPushButton("Time Course Plot")
