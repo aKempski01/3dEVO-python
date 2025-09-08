@@ -3,19 +3,43 @@
 
 ### The following repository contains both spatial and mixed games, that can be updated in multiple ways. All configuration is done via a YAML file. The implementation of all program elements allow simple adjustments and modifications of all provided functions.
 
-## Installation
+
+#### 1. [Software Installation and configuration](#installation)
+#### 1.1 [Installation](#installation)
+#### 1.2 [First run](#First-run)
+
+#### 2. [Algorithm overview](#Algorithm-overview)
+[Go to Real Cool Heading section](#installation)
+
+#### 3. GUI overview
+[Go to Real Cool Heading section](#installation)
+
+#### 4. Adding your own problems/modules
+[Go to Real Cool Heading section](#installation)
+
+
+---
+
+---
+
+# Installation
 ### Our application was developed using python 3.11.3, however it shall run smoothly with other modern python versions.
 
-## For python 3.11.3
+### For python 3.11.3
 ```console
 pip install requiremens.txt
 ```
 
-## In case of conflicts try a minimal version
+### In case of conflicts try a minimal version
 ```console
 pip install requiremens_minimal.txt
 ```
-## 1. First run
+
+---
+
+---
+
+# First run
 ### To run an algorithm use a following command
 ```console
 python main.py --yaml-path "<PATH TO YOUR YAML FILE>"
@@ -28,7 +52,11 @@ python main.py --yaml-path "<PATH TO YOUR YAML FILE>"
 python visualise.py 
 ```
 
-## 2. Algorithm overview
+---
+
+---
+
+## Algorithm overview
 The evolutionary game takes place in so-called game matrix. Our software allows users to solve 2 and 3 dimensional problems, with an unlimited number of phenotypes (decisions). 
 In each iteration a chosen mortality method selects N cell to be changed. They are being replaced by its neighbours with the highest fitness value. 
 The fitness for each cell is determined, by the chosen game theory problem. The fitness is calculated as the cell's phenotype against each neighbour's phenotype. 
@@ -225,3 +253,6 @@ The resource function operates in 3 modes:
 ### Cosinus resource function
 
 ## 9. Implemented parallelism
+
+
+
