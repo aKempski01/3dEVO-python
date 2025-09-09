@@ -1,6 +1,5 @@
 from typing import Optional, List
 
-from poetry.console.commands import self
 
 from neighbourhood.NeighbourController import NeighbourController
 from resource.ResourceFunctionController import ResourceFunctionController, ResourceMode
