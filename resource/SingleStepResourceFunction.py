@@ -34,3 +34,5 @@ class SingleStepResourceFunction(ResourceFunctionController):
         if (epoch_num + 1) == self.step_epoch:
             self.function_value = self.step_inc
 
+    def update_phenotype_idx(self) -> None:
+        pass

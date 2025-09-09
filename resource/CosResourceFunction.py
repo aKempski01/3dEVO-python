@@ -87,7 +87,7 @@ class CosResourceFunction(ResourceFunctionController):
         mat /= self.neighbour_controller.get_max_num_neighbours()
         self.function_matrix = mat * self.num_periods * np.pi * 2 + self.offset * 2 * np.pi
         self.function_matrix = self.average_cos_value + np.cos(self.function_matrix)
-        self.function_matrix = np.cos(mat * np.pi * 0.5)
+        # self.function_matrix = np.cos(mat * np.pi * 0.5)
         self.function_matrix = 1 - self.function_matrix
 
 

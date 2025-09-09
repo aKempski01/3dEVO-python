@@ -59,8 +59,9 @@ class LinearResourceFunction(ResourceFunctionController):
         else:
             raise AttributeError("num_dim parameter is not supported")
 
+        H /= self.param_handler.population_length ** self.param_handler.num_dim
         self.function_value = self.a_param * H + self.b_param
-
+        self.function_value = 1 - self.function_value
 
 
     def __local_update(self, game_matrix: np.ndarray, indices: List[np.ndarray]):
@@ -81,7 +82,9 @@ class LinearResourceFunction(ResourceFunctionController):
         else:
             raise AttributeError("num_dim parameter is not supported")
 
+        mat /= self.neighbour_controller.get_max_num_neighbours()
         self.function_matrix = mat * self.a_param + self.b_param
+        self.function_matrix = 1 - self.function_matrix
 
 
     def __time_update(self, epoch_num: int):

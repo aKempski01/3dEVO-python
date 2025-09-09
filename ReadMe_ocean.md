@@ -1,77 +1,57 @@
 # Gather3d Evo - Python
-### The following project allows users to compute 2, or 3 dimensional problems from the field of game theory. It is an implementation of work present in paper "". Please cite our work using a following formula "".
+# This is not a repository. This implementation was added to enable quick tests of our implementation.
+
+# If you would like to use graphical interface download the newest version of software from the official github repository.
+## "https://github.com/aKempski01/3dEVO-python"
 
 ### The following repository contains both spatial and mixed games, that can be updated in multiple ways. All configuration is done via a YAML file. The implementation of all program elements allow simple adjustments and modifications of all provided functions.
 
 
-#### 1. [Software Installation and configuration](#installation)
-#### 1.1 [Installation](#installation)
-#### 1.2 [First run](#First-run)
-#### 2. [Algorithm overview](#Algorithm-overview)
-#### 2.1 [The initial matrix](#The-initial-matrix)
+#### 1. [Algorithm overview](#Algorithm-overview)
+#### 1.1 [The initial matrix](#The-initial-matrix)
 
-#### 3. [Implemented Problems](#Implemented-problems)
-#### 3.1 [Hawk Dove](#Hawk-Dove-problem)
-#### 3.2 [Hawk Dove with resource function](#Dynamic-Hawk-Dove-problem)
-#### 3.3 [Avoidance of apoptosis](#Apoptosis-problem)
+#### 2. [Implemented Problems](#Implemented-problems)
+#### 2.1 [Hawk Dove](#Hawk-Dove-problem)
+#### 2.2 [Hawk Dove with resource function](#Dynamic-Hawk-Dove-problem)
+#### 2.3 [Avoidance of apoptosis](#Apoptosis-problem)
 
 
-#### 4. [Mortality](#Mortality)
-#### 4.1 [Asynch](#Asynch)
-#### 4.2 [Semi Synch](#Semi-Synch)
-#### 4.3 [Synch](#Synch)
+#### 3. [Mortality](#Mortality)
+#### 3.1 [Asynch](#Asynch)
+#### 3.2 [Semi Synch](#Semi-Synch)
+#### 3.3 [Synch](#Synch)
 
-#### 5. [Neighbourhood](#Neighbourhood)
-#### 5.1 [Von Neumann](#Von-Neumann)
-#### 5.2 [Moore](#Moore)
+#### 4. [Neighbourhood](#Neighbourhood)
+#### 4.1 [Von Neumann](#Von-Neumann)
+#### 4.2 [Moore](#Moore)
 
-#### 6. [Reproduction](#Reproduction)
-#### 6.1 [Deterministic](#Deterministic)
-#### 6.2 [Probabilistic](#Probabilistic)
-#### 6.3 [Weighted](#Weighted)
+#### 5. [Reproduction](#Reproduction)
+#### 5.1 [Deterministic](#Deterministic)
+#### 5.2 [Probabilistic](#Probabilistic)
+#### 5.3 [Weighted](#Weighted)
 
-#### 7. [Resource Function](#Resource-Function)
-#### 7.1 [Single Step resource function](#Single-Step-resource-function)
-#### 7.2 [Linear resource function](#Linear-resource-function)
-#### 7.3 [Quadratic resource function](#Quadratic-resource-function)
-#### 7.4 [Reciprocal resource function](#Reciprocal-resource-function)
-#### 7.5 [Cosinus resource function](#Cosinus-resource-function)
-
-#### 8. [Implemented parallelism](#Implemented-parallelism)
+#### 6. [Resource Function](#Resource-Function)
+#### 6.1 [Single Step resource function](#Single-Step-resource-function)
+#### 6.2 [Linear resource function](#Linear-resource-function)
+#### 6.3 [Quadratic resource function](#Quadratic-resource-function)
+#### 6.4 [Reciprocal resource function](#Reciprocal-resource-function)
+#### 6.5 [Cosinus resource function](#Cosinus-resource-function)
 
 ---
 
 ---
 
-# Installation
-### Our application was developed using python 3.11.3, however it shall run smoothly with other modern python versions.
-
-### For python 3.11.3
-```console
-pip install requiremens.txt
-```
-
-### In case of conflicts try a minimal version
-```console
-pip install requiremens_minimal.txt
-```
-
----
-
----
 
 # First run
-### To run an algorithm use a following command
+### To run an algorithm edit a run command in a code directory.
 ```console
 python main.py --yaml-path "<PATH TO YOUR YAML FILE>"
 ```
 #### If a --yaml-path argument is not used a default yaml file is being loaded.
-#### The results of analysis are saved in runs folder.
+#### The results of analysis are saved in the results/runs folder.
 
-### To visualise the results of computations, use a following command: 
-```console
-python visualise.py 
-```
+### You can visualise the results by observing the changes on the history plot. For GUI download code from our repository.
+### "https://github.com/aKempski01/3dEVO-python"
 
 ---
 
@@ -83,7 +63,7 @@ In each iteration a chosen mortality method selects N cell to be replaced/update
 It can be said that a cell is updated based on its neighbours and their fitness function.
 The fitness for each cell is determined, by the chosen game theory problem. The fitness is calculated as the cell's phenotype against each neighbour's phenotype. 
 
-<img src="readme_files/fitness_formula.png" alt="">
+<img src="/readme_files/fitness_formula.png" alt="">
 
 * f - problem matrix
 * f(i,j) - the value of problem matrix - player strategy i against enemy strategy j
@@ -257,7 +237,7 @@ mortality_strategy: Synch
 ### Von Neumann
 #### Only cells that are connected with a full edge/face are selected.
 
-<img src="readme_files/vonNeumann.png" alt="">
+<img src="/readme_files/vonNeumann.png" alt="">
 
 ```yaml
 neighbourhood_type: VonNeumann
@@ -266,7 +246,7 @@ neighbourhood_type: VonNeumann
 ### MOORE
 #### All surrounding cells are selected.
 
-<img src="readme_files/moore.png" alt="">
+<img src="/readme_files/moore.png" alt="">
 
 ```yaml
 neighbourhood_type: Moore
@@ -275,6 +255,7 @@ neighbourhood_type: Moore
 ---
 
 ---
+
 ## Reproduction
 Reproduction determines the new value of the cell based on its neighbours fitness values. 
 
@@ -290,7 +271,6 @@ The value of the selected cell is set to the weighted mean of all neighbours wit
 ---
 
 ---
-
 
 ## Resource Function
 The parameter **r**, which might be used in dynamic problems to adjust the values of game matrix, is a result of function **R(x)**, where x can be a current epoch value, amount of a selected phenotype in the neighbourhood, or amount of a selected phenotype in the whole game matrix.
@@ -466,11 +446,10 @@ resource_function_params:
   average_cos_value: 0
   offset: 0
 ```
----
 
 ---
+---
 
-# Implemented parallelism
 
 
 
