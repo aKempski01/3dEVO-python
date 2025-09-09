@@ -32,4 +32,3 @@ def save_common_plot(figure: plt.Figure, plot_name: str):
     figure.savefig(path + "/" + plot_name + ".png")
 
     return path + "/" + plot_name + ".png"
-    pass

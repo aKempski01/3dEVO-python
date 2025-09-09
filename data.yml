@@ -1,17 +1,19 @@
 experiment_name: take_01
 
-num_epochs: 500
-population_length: 32
+save_history: True
+
+num_epochs: 50
+population_length: 10
 num_dim: 2
 
 #True False
 run_in_parallel: True
-num_cpu: 2
+num_cpu: 4
 
 # Synch; Asynch; SemiSynch
 mortality_strategy: SemiSynch
 
-mortality_rate: 0.1
+mortality_rate: 0.05
 
 #Deterministic; Probabilistic; Weighted
 reproduction_strategy_name: Deterministic
@@ -20,7 +22,7 @@ num_cells_for_mean: 3
 
 
 #SPATIAL; MIXED
-spatiality_strategy: MIXED
+spatiality_strategy: SPATIAL
 
 #Moore, VonNeumann
 neighbourhood_type: Moore
@@ -33,14 +35,14 @@ problem_name: HawkDoveProblem
 
 
 problem_params:
-  V_param: 6
-  C_param: 9
+  V_param: 9
+  C_param: 6
 
 #problem_params:
 #  a_param: 0.2
 #  b_param: 0.3
 #  c_param: 0
-
+#
 # Put path to initial matrix. If you want to generate matrix on random put None.
 initial_matrix: None
 

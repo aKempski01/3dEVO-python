@@ -3,10 +3,11 @@ import os
 import yaml
 
 import numpy as np
+from matplotlib import pyplot as plt
+
 
 from problem.ProblemController import ProblemController
 from utils.ParamHandler import ParamHandler
-
 
 class SaveController:
 
@@ -39,9 +40,36 @@ class SaveController:
 
             yaml.dump(obj, file)
 
+
     def save_game_matrix(self, game_matrix: np.ndarray, epoch_num: int) -> None:
         np.save(self.__save_dir + '/epoch_'+str(epoch_num)+".npy", game_matrix, allow_pickle=True)
 
+    def save_history_plot(self):
+        history = np.zeros((self.__param_handler.num_epochs+1, self.__param_handler.num_phenotypes))
+
+        for e in range(self.__param_handler.num_epochs+1):
+            arr = np.load(self.__save_dir + '/epoch_'+str(e)+'.npy')
+
+            if self.__param_handler.num_dim == 2:
+                history[e, :] = [np.sum(arr[:, :, i]) for i in range(self.__param_handler.num_phenotypes)]
+
+            elif self.__param_handler.num_dim == 3:
+                history[e, :] = [np.sum(arr[:, :, :, i]) for i in range(self.__param_handler.num_phenotypes)]
+
+
+        history /= self.__param_handler.population_length**self.__param_handler.num_dim
+
+        keys = list(self.__param_handler.phenotype_names_to_idx.keys())
+        keys = sorted(keys)
+        labels = []
+        for k in keys:
+            labels.append(self.__param_handler.phenotype_names_to_idx[k])
+        plt.plot(history, label=labels)
+        plt.title("Frequency plot ")
+        plt.ylim(-0.1, 1.1)
+        plt.legend()
+        plt.savefig(self.__save_dir + '/history.png')
+        # plt.show()
 
     def load_game_matrix(self, epoch_num: int) -> np.ndarray:
         gm = np.load(self.__save_dir + '/epoch_'+str(epoch_num)+".npy")

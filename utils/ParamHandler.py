@@ -43,6 +43,11 @@ class ParamHandler:
         with open(yaml_path, 'r') as f:
             data = yaml.load(f, Loader=yaml.SafeLoader)
 
+        if 'save_history' in data:
+            self.save_history_after_calculations = data['save_history']
+        else:
+            self.save_history_after_calculations = False
+
         self.experiment_name = data['experiment_name']
         self.problem_name = data['problem_name']
         self.problem_params = data['problem_params']

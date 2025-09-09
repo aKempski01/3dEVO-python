@@ -93,7 +93,8 @@ class MainCotroller:
             self.save_controller.save_game_matrix(game_matrix, epoch+1)
             print("Epoch {} computed in {}".format(epoch, time.time() - s))
 
-
+        if self.param_handler.save_history_after_calculations:
+            self.save_controller.save_history_plot()
 
 
 
