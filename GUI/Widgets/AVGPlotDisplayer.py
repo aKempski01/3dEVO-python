@@ -73,7 +73,7 @@ class AVGPlotDisplayer(QtWidgets.QWidget):
         self.up_lay.addWidget(self.save_matrix_btn)
         self.up_lay.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
-        # self.slider_text = QLabel("Epoch Num: {}".format(self.displayed_epoch))
+
 
         self.slider = QLabeledRangeSlider(QtCore.Qt.Orientation.Horizontal)
         self.slider.setValue((self.first_epoch, self.last_epoch))

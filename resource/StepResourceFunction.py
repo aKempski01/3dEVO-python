@@ -33,6 +33,7 @@ class StepResourceFunction(ResourceFunctionController):
     def update_phenotype_idx(self) -> None:
         pass
 
+
     def update_function_value(self, epoch_num: int, game_matrix: Optional[np.ndarray] = None, indices: Optional[List[np.ndarray]] = None):
         if (epoch_num + 1) % self.step_epoch == 0:
             self.function_value += self.step_inc

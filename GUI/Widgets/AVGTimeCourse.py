@@ -38,7 +38,7 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
     num_selected_checkboxes: int
 
-    hist_sum: np.array
+    hist_sum: np.ndarray
     history: np.ndarray
 
     normalize_plot: bool = True
@@ -64,7 +64,7 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
 
         self.dispersion_box = QComboBox()
-        self.dispersion_box.addItems(["St. Dev.", "CI", "IQR"])
+        self.dispersion_box.addItems(["St. Dev.", "CI", "IQR", "None"])
         self.dispersion_box.currentIndexChanged.connect(self.update_plot)
 
 
@@ -200,6 +200,10 @@ class AVGTimeCourseDisplay(QtWidgets.QWidget):
 
         if self.dispersion_box.currentText() == "IQR":
             return stats.iqr(plots, axis=0)
+
+
+        if self.dispersion_box.currentText() == "None":
+            return np.zeros((plots.shape[1], plots.shape[0]))
 
 
     def __update_checkboxes(self, exp_name: str):

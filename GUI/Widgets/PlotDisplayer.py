@@ -19,35 +19,25 @@ class MplCanvas(FigureCanvasQTAgg):
     cmaps =['Blues', 'Reds', "viridis", "plasma", "cool", "winter", "copper"]
     chosen_cmap: str
 
-    def __init__(self, parent=None, width=10, height=8, dpi=100, n_phenotypes=2, n_dim: int = 2):
+    def __init__(self, parent=None, width=10, height=8, dpi=100, n_phenotypes=2):
         self.axes = []
         self.chosen_cmap = self.cmaps[0]
 
         self.fig = Figure(figsize=(width, height), dpi=dpi)
-        self.reload_axes(n_phenotypes=n_phenotypes, n_dim=n_dim)
+        self.reload_axes(n_phenotypes=n_phenotypes)
 
 
         super().__init__(self.fig)
 
 
-    def reload_axes(self, n_phenotypes: int = 2, n_dim: int = 2):
+    def reload_axes(self, n_phenotypes: int = 2):
         self.fig.clear()
-        # self.fig.clf()
         self.axes = []
-        # if n_dim == 2:
+
         for n in range(n_phenotypes):
             self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n+1))
             self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap=self.chosen_cmap), ax=self.axes[n],
                               orientation='vertical')
-
-        # elif n_dim == 3:
-        #     for n in range(n_phenotypes):
-        #         self.axes.append(self.fig.add_subplot(n_phenotypes-1, 2, n + 1, projection='3d'))
-        #         self.fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap=self.chosen_cmap), ax=self.axes[n],
-        #                           orientation='vertical')
-
-        # else:
-        #     ValueError("Number of dimensions is not supported.")
 
 
 
@@ -122,7 +112,7 @@ class PlotDisplayer(QtWidgets.QWidget):
 
     def refresh_layout(self):
         self.slider.setMaximum(self.__logic_handler.param_handler.num_epochs)
-        self.sc.reload_axes(self.__logic_handler.param_handler.num_phenotypes, self.__logic_handler.param_handler.num_dim)
+        self.sc.reload_axes(self.__logic_handler.param_handler.num_phenotypes)
 
 
         if self.__logic_handler.param_handler is not None:
@@ -172,7 +162,7 @@ class PlotDisplayer(QtWidgets.QWidget):
 
     def __c_map_changed_signal(self, text: str):
         self.sc.chosen_cmap = text
-        self.sc.reload_axes(self.__logic_handler.param_handler.num_phenotypes, self.__logic_handler.param_handler.num_dim)
+        self.sc.reload_axes(self.__logic_handler.param_handler.num_phenotypes)
         self.__update_plot()
 
 
