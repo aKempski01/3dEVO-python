@@ -59,9 +59,10 @@ class AnimatorThread(QThread):
         """Long-running task."""
         for i in range(self.n_iter):
             sleep(0.5)
-            self.progress.emit()
             if self.__stop:
                 break
+            self.progress.emit()
+
         self.finished.emit()
 
     def stop(self):

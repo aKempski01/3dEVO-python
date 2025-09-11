@@ -17,12 +17,27 @@ class LogicHandler:
 
     def __init__(self):
         self.refresh_exp()
+        if len(self.experiment_list) == 0:
+            exit("No available experiments in the runs directory. Please add at least one experiment or run a simulation using command 'python main.py --yaml-path <put path here>'.")
+
         self.load_experiment(self.experiment_list[0])
 
 
     def refresh_exp(self):
         self.experiment_list = glob.glob("runs/*")
         self.experiment_list.sort(key=os.path.getmtime, reverse=True)
+
+        exp_to_remove = []
+        for e in self.experiment_list:
+            with open(e + "/data.yaml", 'r') as f:
+                data = yaml.load(f, Loader=yaml.SafeLoader)
+            num = data['num_epochs']
+            if num + 1 != len(glob.glob(e + "/*.npy")):
+                print("Number of matrices in experiment {} is  and will be excluded from the visualisation.".format(e))
+                exp_to_remove.append(e)
+
+        for e in exp_to_remove:
+            self.experiment_list.remove(e)
 
 
     def load_experiment(self, name: str):
