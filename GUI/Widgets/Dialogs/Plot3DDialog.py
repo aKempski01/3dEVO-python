@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from poetry.console.commands import self
 
 from GUI.Logic.LogicHandler import LogicHandler
 from GUI.utils.save_functions import save_plt

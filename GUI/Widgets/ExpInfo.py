@@ -1,6 +1,5 @@
 from PySide6 import QtWidgets
 from PySide6.QtWidgets import QFormLayout, QLabel
-from poetry.console.commands import self
 
 from GUI.Logic.LogicHandler import LogicHandler
 

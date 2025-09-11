@@ -6,7 +6,6 @@ from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListVi
     QStackedWidget, QSizePolicy
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from poetry.console.commands import self
 import matplotlib as mpl
 from superqt import QLabeledRangeSlider, QCollapsible
 import scipy.stats as stats

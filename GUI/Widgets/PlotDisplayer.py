@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, QThread, Signal
 from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from poetry.console.commands import self
+
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from GUI.Widgets.Dialogs.Plot3DDialog import PlotWidget

@@ -3,7 +3,6 @@ from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox, QCheckBox, QPushButton
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from poetry.console.commands import self
 import matplotlib as mpl
 from pyqttoast import Toast, ToastPreset
 
