@@ -23,8 +23,12 @@ class SaveController:
 
         dirs = glob.glob("runs/" + param_handler.experiment_name + "*")
 
+        if len(dirs) == 0:
+            dirs = 0
+        else:
+            dirs = np.max([int(d.split("_")[-1]) for d in dirs])+1
 
-        self.__save_dir = "runs/" + param_handler.experiment_name + "_" + str(len(dirs))
+        self.__save_dir = "runs/" + param_handler.experiment_name + "_" + str(dirs)
         os.mkdir(self.__save_dir)
 
     def save_yaml_file(self, problem_controller: ProblemController) -> None:

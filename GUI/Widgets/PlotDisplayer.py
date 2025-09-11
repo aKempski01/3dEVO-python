@@ -1,6 +1,9 @@
+from time import sleep
+
 import numpy as np
 from PySide6 import QtGui
 from PySide6 import QtWidgets, QtCore
+from PySide6.QtCore import QObject, QThread, Signal
 from PySide6.QtWidgets import QVBoxLayout, QSlider, QHBoxLayout, QLabel, QListView, QComboBox
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -41,10 +44,36 @@ class MplCanvas(FigureCanvasQTAgg):
 
 
 
+class AnimatorThread(QThread):
+    finished = Signal()
+    progress = Signal()
+    __stop: bool
+    n_iter: int
+
+    def __init__(self, n_iter):
+        super().__init__()
+        self.n_iter = n_iter
+        self.__stop = False
+
+    def run(self):
+        """Long-running task."""
+        for i in range(self.n_iter):
+            sleep(0.5)
+            if self.__stop:
+                break
+            self.progress.emit()
+
+        self.finished.emit()
+
+    def stop(self):
+        self.__stop = True
+
+
 class PlotDisplayer(QtWidgets.QWidget):
     __logic_handler: LogicHandler
     displayed_epoch: int = 0
     displayed_slice: int = 0
+    animator: AnimatorThread
     game_matrix: np.ndarray
 
     def __init__(self, logic_handler: LogicHandler):
@@ -53,7 +82,6 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.__logic_handler = logic_handler
         # self.__update_matrix()
         self.sc = MplCanvas(self, width = 15, height = 15, dpi = 100, n_phenotypes = self.__logic_handler.param_handler.num_phenotypes)
-
 
         self.combo_c_map = QComboBox()
 
@@ -88,6 +116,10 @@ class PlotDisplayer(QtWidgets.QWidget):
         self.slice_slider.setMaximum(self.__logic_handler.param_handler.population_length)
         self.slice_slider.setSingleStep(1)
 
+
+        self.animate_button = QtWidgets.QPushButton("Animate")
+        self.animate_button.pressed.connect(self.__animation_button_signal)
+
         self.pageLayout = QVBoxLayout()
         self.mainLayout = QHBoxLayout()
         self.botLayout = QHBoxLayout()
@@ -102,11 +134,41 @@ class PlotDisplayer(QtWidgets.QWidget):
 
         self.botLayout.addWidget(self.slider_text)
         self.botLayout.addWidget(self.slider)
+        self.botLayout.addWidget(self.animate_button)
 
 
         self.setLayout(self.pageLayout)
 
         self.refresh_layout()
+
+
+
+    def __start_animator(self):
+        self.animator = AnimatorThread(self.__logic_handler.param_handler.num_epochs-self.displayed_epoch)
+        self.animator.progress.connect(self.__animation_step)
+        self.animator.finished.connect(self.__animation_finished)
+
+        self.slider.setEnabled(False)
+        self.animate_button.setText("Stop")
+
+        self.animator.start()
+
+
+
+    def __animation_step(self):
+        self.displayed_epoch += 1
+        self.slider.setValue(self.displayed_epoch)
+        self.slider_text.setText("Epoch Num: {}".format(self.displayed_epoch))
+        self.__update_plot()
+
+
+    def __animation_finished(self):
+        self.animator.stop()
+        self.slider.setEnabled(True)
+        self.animate_button.setText("Animate")
+
+        self.animator.exit()
+
 
 
 
@@ -182,4 +244,10 @@ class PlotDisplayer(QtWidgets.QWidget):
         pw = PlotWidget(self.game_matrix, self.__logic_handler, self.displayed_epoch)
         pw.exec_()
 
+
+    def __animation_button_signal(self):
+        if self.animate_button.text() == "Animate":
+            self.__start_animator()
+        else:
+            self.__animation_finished()
 
